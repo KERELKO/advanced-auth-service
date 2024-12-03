@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import os
-import typing as t
 
 from dotenv import load_dotenv
 
@@ -10,7 +9,8 @@ load_dotenv()
 
 @dataclass(eq=False, repr=False, frozen=True, slots=True)
 class Config:
-    env: t.Literal['prod', 'dev', 'stage'] = 'dev'
+    # 'dev', 'prod', 'stage'
+    env: str = os.getenv('ENV', 'dev')
 
     postgres_host: str = os.getenv('POSTGRES_HOST', 'postgres')
     postgres_port: int = int(os.getenv('POSTGRES_PORT', 5432))

@@ -30,4 +30,4 @@ def app_factory(config: Config) -> Application:
 
 
 if __name__ == '__main__':
-    uvicorn.run(app=app_factory(config=_config), host='localhost', port=8000)
+    uvicorn.run(app=app_factory(config=_config), host='0.0.0.0', port=8000)
