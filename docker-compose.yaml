@@ -6,20 +6,20 @@ services:
     build: .
     volumes:
       - .:/app
-    command: python3 main.py
+    command: ./entrypoint.sh
     env_file:
       - .env
     ports:
       - 8000:8000
     depends_on:
-      - postgresdb
+      - db
 
-  postgresdb:
-    container_name: postgresdb
-    image: postgres:16
+  db:
+    container_name: postgres
+    image: postgres:latest
     volumes:
       - /var/lib/postgres
     ports:
-      - 5432:5432
+      - '5432:5432'
     env_file:
-      - .env
+      .env

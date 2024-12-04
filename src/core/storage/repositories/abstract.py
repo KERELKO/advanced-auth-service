@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.core.dto import UpdateUserDTO, UserDTO
+from src.core.dto import CreateUserDTO, UserDTO
 
 
 class AbstractUserRepository(ABC):
@@ -8,7 +8,4 @@ class AbstractUserRepository(ABC):
     async def get(self, id: int) -> UserDTO: ...
 
     @abstractmethod
-    async def update(self, id: int, data: UpdateUserDTO) -> UserDTO: ...
-
-    @abstractmethod
-    async def remove(self, id: int) -> UserDTO: ...
+    async def add(self, data: CreateUserDTO) -> UserDTO: ...

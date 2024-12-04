@@ -9,7 +9,7 @@ class ApplicationException(Exception):
 
 @dataclass(eq=False)
 class ObjectDoesNotExist(ApplicationException):
-    id: str
+    id: int
 
     @property
     def msg(self) -> str:
