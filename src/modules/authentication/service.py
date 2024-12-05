@@ -1,8 +1,8 @@
 from dataclasses import asdict
 
-from src.core.dto import CreateUserDTO, UserDTO
+from src.core.dto.user import CreateUserDTO, UserDTO
 from src.core.security import SecurityService
-from src.core.storage.repositories.abstract import AbstractUserRepository
+from src.core.storage.repositories.base import IUserRepository
 
 from .dto import LoginUserDTO, RegisterUserDTO
 
@@ -10,7 +10,7 @@ from .dto import LoginUserDTO, RegisterUserDTO
 class AuthService:
     def __init__(
         self,
-        repository: AbstractUserRepository,
+        repository: IUserRepository,
         security_service: SecurityService,
     ) -> None:
         self.repo = repository

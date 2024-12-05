@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from src.core.config import config as project_config
 
 from src.core.storage.orm.models.common import Base
-from src.core.storage.orm.models import RoleORM, UserORM, PermissionORM  # noqa
+from src.core.storage.orm.models import *  # noqa
 
 from alembic import context
 

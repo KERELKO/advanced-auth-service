@@ -7,7 +7,7 @@ class UserDTO:
     id: int
     username: str
     email: str | None
-    role_id: int
+    permissions: set[str]
     hashed_password: str | None
 
     mfa_enabled: bool = False
@@ -38,3 +38,4 @@ class UserOutDTO:
 class UpdateUserDTO:
     username: str | None = None
     email: str | None = None
+    permissions: set[str] = field(default_factory=set)

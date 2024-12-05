@@ -2,7 +2,7 @@ from dataclasses import asdict
 from blacksheep import FromJSON, FromServices, Response, json
 
 from loguru import logger
-from src.core.dto import UserOutDTO
+from src.core.dto.users import UserOutDTO
 from src.core.utils import to_dto
 from src.modules.authentication.dto import RegisterUserDTO
 from src.modules.authentication.schemas import LoginUserSchema, LogoutUserSchema, RegisterUserSchema

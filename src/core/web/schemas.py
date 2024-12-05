@@ -1,10 +1,7 @@
-import typing as t
-from dataclasses import dataclass, field
-
-DT = t.TypeVar('DT')
+from dataclasses import dataclass
 
 
-@dataclass(eq=False, repr=False)
-class APIResponse(t.Generic[DT]):
-    data: DT
-    meta: dict[str, t.Any] = field(default_factory=dict)
+@dataclass(eq=False, repr=False, slots=True)
+class Token:
+    value: str
+    type: str = 'Bearer'

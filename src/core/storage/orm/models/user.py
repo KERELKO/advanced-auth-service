@@ -1,12 +1,15 @@
-from typing import Any
+import typing as t
 
 import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
+from sqlalchemy import Boolean, DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .common import Base
-from .permissions import RoleORM
+from .permissions import PermissionORM, permission_user_table
+
+if t.TYPE_CHECKING:
+    from .permissions import PermissionORM
 
 
 class UserORM(Base):
@@ -30,18 +33,21 @@ class UserORM(Base):
         default=datetime.datetime.now,
     )
 
-    role_id: Mapped[int | None] = mapped_column(ForeignKey('role.id'), nullable=True)
-    role: Mapped[RoleORM] = relationship(back_populates='users')
+    permissions: Mapped[list[PermissionORM]] = relationship(
+        'PermissionORM',
+        secondary=permission_user_table,
+        lazy='joined',
+        backref='users',
+    )
 
     def __str__(self) -> str:
         return self.username
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, t.Any]:
         return {
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'role_id': self.role_id,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'hashed_password': self.hashed_password,
@@ -49,4 +55,5 @@ class UserORM(Base):
             'mfa_secret': self.mfa_secret,
             'oauth_provider': self.oauth_provider,
             'oauth_provider_id': self.oauth_provider_id,
+            'permissions': set(permission.codename for permission in self.permissions),
         }

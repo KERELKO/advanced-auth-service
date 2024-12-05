@@ -1,27 +1,45 @@
-import typing as t
+from dataclasses import asdict
 from datetime import datetime, timedelta, timezone
 
 import jwt
+from loguru import logger
 
 from src.core.config import Config
-from src.core.security import SecurityService
+from src.core.storage.repositories.base import IPermissionRepository, IUserRepository
+from src.core.utils import not_found
+from src.modules.authorization.dto import TokenPayload
 
 
 class AuthorizationService:
     def __init__(
         self,
         config: Config,
-        security_service: SecurityService,
+        user_repository: IUserRepository,
+        permission_repository: IPermissionRepository,
     ) -> None:
         self._config = config
-        self.__security_service = security_service
+        self.user_repository = user_repository
+        self.permission_repository = permission_repository
+
+    async def has_permissions(self, user_id: int, permissions: set[str]) -> bool:
+        user = await self.user_repository.get(id=user_id) or not_found(id=user_id)
+        return user.permissions <= permissions
+
+    def decode_token(self, token: str) -> TokenPayload:
+        data = jwt.decode(
+            jwt=token,
+            key=self._config.secret_key,
+            algorithms=self._config.algorithms,
+        )
+        logger.info(data)
+        return TokenPayload(**data)
 
     def create_access_token(
         self,
-        data: dict[str, t.Any],
+        payload: TokenPayload,
         expires_delta: timedelta | None = None,
     ) -> str:
-        to_encode = data.copy()
+        to_encode = asdict(payload)
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
@@ -32,6 +50,6 @@ class AuthorizationService:
         encoded_jwt = jwt.encode(
             to_encode,
             self._config.secret_key,
-            algorithm=self._config.algorithm,
+            algorithm=self._config.algorithms[0],
         )
         return encoded_jwt

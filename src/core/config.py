@@ -22,7 +22,7 @@ class Config:
     postgres_password: str = os.getenv('POSTGRES_PASSWORD', 'admin')
     postgres_db: str = os.getenv('POSTGRES_DB', 'auth-db')
 
-    algorithm: str = 'HS256'
+    algorithms: list[str] = ['HS256']
     access_token_expire_minutes: int = 30
     crypto_context: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
     secret_key: str = os.getenv('SECRET_KEY', secrets.token_hex(32))

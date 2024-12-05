@@ -1,5 +1,5 @@
-from .permissions import PermissionORM, RoleORM
+from .permissions import PermissionORM
 from .user import UserORM
 
 
-__all__ = ['UserORM', 'PermissionORM', 'RoleORM']
+__all__ = ['UserORM', 'PermissionORM']

@@ -1,17 +1,14 @@
 import typing as t
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .common import Base
 
-if t.TYPE_CHECKING:
-    from .user import UserORM
-
-role_permission_table = Table(
-    'role_permission',
+permission_user_table = Table(
+    'permission_user',
     Base.metadata,
-    Column('role_id', Integer, ForeignKey('role.id'), primary_key=True),
+    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
     Column('permission_id', Integer, ForeignKey('permission.id'), primary_key=True),
 )
 
@@ -23,21 +20,5 @@ class PermissionORM(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     codename: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    roles: Mapped[list['RoleORM']] = relationship(
-        secondary=role_permission_table,
-        back_populates='permissions',
-    )
-
-
-class RoleORM(Base):
-    __tablename__ = 'role'
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
-
-    users: Mapped[list['UserORM']] = relationship(back_populates='role')
-
-    permissions: Mapped[list['PermissionORM']] = relationship(
-        secondary=role_permission_table,
-        back_populates='roles',
-    )
+    def to_dict(self) -> dict[str, t.Any]:
+        return {'id': self.id, 'name': self.name, 'codename': self.codename}
