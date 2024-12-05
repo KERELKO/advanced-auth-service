@@ -1,7 +1,8 @@
 from dataclasses import asdict
-from src.core.dto import CreateUserDTO, UserDTO
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from src.core.dto import CreateUserDTO, UserDTO
 from src.core.exceptions import ObjectDoesNotExist
 from src.core.storage.orm.models.user import UserORM
 from src.core.utils import to_dto

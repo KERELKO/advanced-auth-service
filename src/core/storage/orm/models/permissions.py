@@ -21,7 +21,7 @@ class PermissionORM(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    value: Mapped[int | None] = mapped_column(nullable=True)
+    codename: Mapped[str] = mapped_column(String(30), nullable=False)
 
     roles: Mapped[list['RoleORM']] = relationship(
         secondary=role_permission_table,

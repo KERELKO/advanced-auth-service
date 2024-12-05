@@ -18,7 +18,7 @@ services:
     container_name: postgres
     image: postgres:latest
     volumes:
-      - /var/lib/postgres
+      - ./data/postgres/:/var/lib/postgres
     ports:
       - '5432:5432'
     env_file:
