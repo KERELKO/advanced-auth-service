@@ -23,7 +23,7 @@ class UserDTO:
 @dataclass(eq=False, repr=False, slots=True)
 class CreateUserDTO:
     username: str
-    email: str | None
+    email: str | None = None
     hashed_password: str | None = None
 
 

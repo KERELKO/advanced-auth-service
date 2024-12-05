@@ -1,8 +1,10 @@
 line-length = 100
 extend-ignore = ["E701", "E301"]
+exclude = ["alembic", "tests"]
 
 [lint]
 extend-select = ["E501"]
+exclude = ["alembic", "tests"]
 flake8-implicit-str-concat.allow-multiline = false
 
 [format]

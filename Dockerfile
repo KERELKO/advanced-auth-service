@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt update && apt upgrade
 
-WORKDIR app/
+WORKDIR /app
 
 RUN apt update -y && \
     apt install -y python3-dev \

@@ -16,10 +16,10 @@ class Config:
 
     postgres_dialect: str = 'postgresql+asyncpg'
 
-    postgres_host: str = os.getenv('POSTGRES_HOST', 'postgresdb')
+    postgres_host: str = os.getenv('POSTGRES_HOST', 'postgres')
     postgres_port: int = int(os.getenv('POSTGRES_PORT', 5432))
-    postgres_user: str = os.getenv('POSTGRES_USER', 'postgres')
-    postgres_password: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
+    postgres_user: str = os.getenv('POSTGRES_USER', 'admin')
+    postgres_password: str = os.getenv('POSTGRES_PASSWORD', 'admin')
     postgres_db: str = os.getenv('POSTGRES_DB', 'auth-db')
 
     algorithm: str = 'HS256'
