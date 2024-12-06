@@ -1,15 +1,18 @@
 import pytest
-from src.core.di import Container
-from src.core.dto import CreateUserDTO
+
+from src.core.dto.users import AddUserDTO
 from src.core.exceptions import ObjectDoesNotExist
 from src.core.storage.repositories.sqlalchemy import SQLAlchemyUserRepository
+from src.core.storage.repositories.base import IUserRepository
+
+from tests import _container as container
 
 
-@pytest.mark.asyncio
-async def test_can_add_and_get_methods_of_repository(container: Container) -> None:
-    repo = container.resolve(SQLAlchemyUserRepository)
+async def test_can_add_and_get_methods_of_repository() -> None:
+    repo = container.resolve(IUserRepository)
+    assert isinstance(repo, SQLAlchemyUserRepository)
 
-    dto = CreateUserDTO(username='admin', email='admin@gmail.com', hashed_password='lalal')
+    dto = AddUserDTO(username='admin', email='admin@gmail.com', hashed_password='lalal')
 
     added_user = await repo.add(dto)
 

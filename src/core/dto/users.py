@@ -6,9 +6,9 @@ import datetime
 class UserDTO:
     id: int
     username: str
-    email: str | None
-    permissions: set[str]
-    hashed_password: str | None
+    email: str | None = None
+    permissions: set[str] = field(default_factory=set)
+    hashed_password: str | None = None
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
@@ -21,7 +21,7 @@ class UserDTO:
 
 
 @dataclass(eq=False, repr=False, slots=True)
-class CreateUserDTO:
+class AddUserDTO:
     username: str
     email: str | None = None
     hashed_password: str | None = None

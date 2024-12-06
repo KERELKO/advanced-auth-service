@@ -1,4 +1,4 @@
-APP = web
+APP = app
 DB = postgres
 EXEC = docker exec -it
 

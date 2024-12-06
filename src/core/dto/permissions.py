@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(eq=False, repr=False)
-class CreatePermissionDTO:
+class AddPermissionDTO:
     name: str
     codename: str
 

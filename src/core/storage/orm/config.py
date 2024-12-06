@@ -15,7 +15,7 @@ class Database:
     def __init__(self, config: Config) -> None:
         self.config = config
         self.engine = create_async_engine(config.postgres_connection_string)
-        self.async_session_factory = async_sessionmaker(
+        self.session_factory = async_sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
 

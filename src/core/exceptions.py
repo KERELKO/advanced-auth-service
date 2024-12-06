@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import typing as t
 
 
@@ -19,8 +19,8 @@ class ObjectDoesNotExist(ApplicationException):
 
 @dataclass(eq=False)
 class NotFoundByFilters(ObjectDoesNotExist):
-    filters: dict[str, t.Any]
     id: int = -1
+    filters: dict[str, t.Any] = field(kw_only=True)
 
     @property
     def msg(self) -> str:
@@ -35,3 +35,12 @@ class AccessDenied(ApplicationException):
     @property
     def msg(self) -> str:
         return f'Access denied: required permission: {self.permission_codenames}'
+
+
+@dataclass(eq=False)
+class InvalidTokenException(ApplicationException):
+    token: str
+
+    @property
+    def msg(self) -> str:
+        return 'Token is invalid'

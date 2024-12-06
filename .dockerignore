@@ -2,3 +2,4 @@ __pycache__/
 .env.example
 .git
 .gitignore
+idea.md

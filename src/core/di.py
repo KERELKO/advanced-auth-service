@@ -5,9 +5,13 @@ import punq  # type: ignore
 from src.core import config
 from src.core.config import Config
 from src.core.security import SecurityService
-from src.core.storage.repositories.abstract import AbstractUserRepository
-from src.core.storage.repositories.sqlalchemy import SQLAlchemyUserRepository
+from src.core.storage.repositories.base import IPermissionRepository, IUserRepository
+from src.core.storage.repositories.sqlalchemy import (
+    SQLAlchemyPermissionRepository,
+    SQLAlchemyUserRepository,
+)
 from src.core.storage.orm.config import Database
+from src.modules.authentication.service import AuthenticationService
 
 
 T = t.TypeVar('T')
@@ -25,10 +29,14 @@ class Container:
         db = Database(config)
         container.register(Database, instance=db)
         container.register(SecurityService, scope=punq.Scope.singleton)
+        container.register(IUserRepository, SQLAlchemyUserRepository, scope=punq.Scope.singleton)
         container.register(
-            AbstractUserRepository,
-            instance=(SQLAlchemyUserRepository(db.async_session_factory)),
+            IPermissionRepository,
+            SQLAlchemyPermissionRepository,
+            scope=punq.Scope.singleton,
         )
+
+        container.register(AuthenticationService)
 
         return container
 

@@ -36,7 +36,7 @@ class UserORM(Base):
     permissions: Mapped[list[PermissionORM]] = relationship(
         'PermissionORM',
         secondary=permission_user_table,
-        lazy='joined',
+        lazy='noload',
         backref='users',
     )
 
