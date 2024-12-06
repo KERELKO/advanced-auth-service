@@ -7,8 +7,9 @@ class Token:
     type: str = 'bearer'
 
 
-@dataclass(eq=False, repr=False, slots=True)
+@dataclass(eq=False, slots=True)
 class TokenPayload:
+    sub: str
     user_id: int
-    username: str
-    permissions: set[str] = field(default_factory=set)
+    exp: int
+    permissions: list[str] = field(default_factory=list)

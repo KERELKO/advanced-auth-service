@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
 from loguru import logger
 import pytest
 
+from src.core.config import config
 from src.modules.authentication.dto import LoginUserDTO, RegisterUserDTO
 from src.modules.authentication.service import AuthenticationService
 from tests import _container as container
@@ -25,6 +27,20 @@ async def test_can_register_and_login_user(register_user_dto: RegisterUserDTO) -
     decoded_access_token = service._decode_token(access_token.value)
     logger.info(f'Decoded access token: {decoded_access_token}')
 
-    assert decoded_access_token.username == register_user_dto.username
-    assert decoded_access_token.exp
+    assert decoded_access_token.sub == register_user_dto.username
+    logger.info(
+        'Access token: Current time:'
+        f'{datetime.now()}, expire: {datetime.fromtimestamp(decoded_access_token.exp)}',
+    )
+    assert not service._is_token_expired(decoded_access_token.exp)
 
+
+    decoded_refresh_token = service._decode_token(refresh_token.value)
+    logger.info(f'Decoded access token: {decoded_refresh_token}')
+
+    logger.info(
+        'Refresh token: Current time:'
+        f'{datetime.now()}, expire: {datetime.fromtimestamp(decoded_refresh_token.exp)}',
+    )
+
+    assert not service._is_token_expired(decoded_refresh_token.exp)

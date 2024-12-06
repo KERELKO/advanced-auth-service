@@ -10,11 +10,11 @@ class ApplicationException(Exception):
 
 @dataclass(eq=False)
 class ObjectDoesNotExist(ApplicationException):
-    id: int
+    id: t.Any
 
     @property
     def msg(self) -> str:
-        return f'Object with id "{self.id}" does not exist'
+        return f'Object does not exist: {self.id}'
 
 
 @dataclass(eq=False)

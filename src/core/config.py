@@ -24,7 +24,7 @@ class Config:
 
     algorithms: tuple[str] = ('HS256',)
     refresh_token_expire_days: int = 7
-    access_token_expire_minutes: int = 30
+    access_token_expire_minutes: int = 60
     crypto_context: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
     secret_key: str = os.getenv('SECRET_KEY', secrets.token_hex(32))
 
