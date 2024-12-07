@@ -7,7 +7,7 @@ class UserDTO:
     id: int
     username: str
     email: str | None = None
-    permissions: set[str] = field(default_factory=set)
+    permissions: list[str] = field(default_factory=list)
     hashed_password: str | None = None
 
     mfa_enabled: bool = False

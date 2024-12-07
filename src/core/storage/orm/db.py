@@ -1,5 +1,7 @@
 import asyncio
+import re
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -20,7 +22,19 @@ class Database:
         )
 
     def init(self) -> None:
-        asyncio.run(self.create())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.create())
+        if self.config.env == 'dev':
+            loop.run_until_complete(self.insert_data())
+
+    async def insert_data(self) -> None:
+        async with self.engine.connect() as conn:
+            with open('db_data.sql', 'r') as file:
+                statements = re.split(r';\s*$', file.read(), flags=re.MULTILINE)
+                for statement in statements:
+                    if statement:
+                        await conn.execute(text(statement))
+                await conn.commit()
 
     async def create(self) -> None:
         async with self.engine.begin() as conn:

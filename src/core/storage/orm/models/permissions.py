@@ -5,16 +5,19 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .common import Base
 
+if t.TYPE_CHECKING:
+    pass
+
 permission_user_table = Table(
     'permission_user',
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
-    Column('permission_id', Integer, ForeignKey('permission.id'), primary_key=True),
+    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
+    Column('permission_id', Integer, ForeignKey('permissions.id'), primary_key=True),
 )
 
 
 class PermissionORM(Base):
-    __tablename__ = 'permission'
+    __tablename__ = 'permissions'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)

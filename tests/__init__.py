@@ -9,7 +9,7 @@ from src.core import config
 from src.core.config import Config
 from src.core.di import Container
 from src.core.dto.users import AddUserDTO, UserDTO
-from src.core.storage.orm.config import Database
+from src.core.storage.orm.db import Database
 from src.core.storage.repositories.sqlalchemy import SQLAlchemyUserRepository
 from src.modules.authentication.dto import LoginUserDTO, RegisterUserDTO
 from src.modules.authentication.service import AuthenticationService

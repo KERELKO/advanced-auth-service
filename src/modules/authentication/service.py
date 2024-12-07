@@ -14,16 +14,13 @@ from src.modules.authentication.exceptions import IncorrectPasswordException, To
 from .dto import LoginUserDTO, RegisterUserDTO
 
 
-from typing import Tuple
-
-
 class AuthenticationService:
     def __init__(self, repository: IUserRepository, config: Config) -> None:
         self.repo = repository
         self._config = config
         self.context = config.crypto_context
 
-    async def login(self, dto: LoginUserDTO) -> Tuple[Token, Token]:
+    async def login(self, dto: LoginUserDTO) -> tuple[Token, Token]:
         """
         Verifies user data and return a tuple containing access and refresh tokens.
         """
@@ -54,21 +51,7 @@ class AuthenticationService:
 
         return Token(access_token), Token(refresh_token)
 
-    async def logout(self, access_token: str) -> bool:
-        """
-        Check if token is active and destroy it.
-        """
-        try:
-            decoded_token = self._decode_token(access_token)
-            if self._is_token_expired(decoded_token.exp):
-                raise TokenExpiredException
-            return True
-        except jwt.ExpiredSignatureError:
-            raise TokenExpiredException
-        except jwt.DecodeError:
-            raise InvalidTokenException(access_token)
-
-    async def refresh_token(self, access_token: str, refresh_token: str) -> Tuple[Token, Token]:
+    async def refresh_token(self, access_token: str, refresh_token: str) -> tuple[Token, Token]:
         """
         Return new access and refresh tokens if refresh token is active, otherwise throw
         `InvalidTokenException`.

@@ -2,7 +2,7 @@ import typing as t
 
 import datetime
 
-from sqlalchemy import Boolean, DateTime, String, func
+from sqlalchemy import Boolean, DateTime, String, func, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .common import Base
@@ -13,13 +13,15 @@ if t.TYPE_CHECKING:
 
 
 class UserORM(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(30))
+    username: Mapped[str] = mapped_column(String(30), nullable=False)
     email: Mapped[str | None] = mapped_column(String(40), nullable=True)
     hashed_password: Mapped[str | None] = mapped_column(String(200), nullable=True)
-    mfa_enabled: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=False)
+    mfa_enabled: Mapped[bool] = mapped_column(
+        Boolean(), default=False, nullable=False, server_default=text('false')
+    )
     mfa_secret: Mapped[str] = mapped_column(String(), nullable=True)
     oauth_provider: Mapped[str | None] = mapped_column(String(30), nullable=True)
     oauth_provider_id: Mapped[str | None] = mapped_column(String(), nullable=True)
@@ -31,10 +33,10 @@ class UserORM(Base):
         DateTime(timezone=True),
         onupdate=func.now(),
         default=datetime.datetime.now,
+        server_default=func.now(),
     )
 
     permissions: Mapped[list[PermissionORM]] = relationship(
-        'PermissionORM',
         secondary=permission_user_table,
         lazy='noload',
         backref='users',
@@ -55,5 +57,5 @@ class UserORM(Base):
             'mfa_secret': self.mfa_secret,
             'oauth_provider': self.oauth_provider,
             'oauth_provider_id': self.oauth_provider_id,
-            'permissions': set(permission.codename for permission in self.permissions),
+            'permissions': [permission.codename for permission in self.permissions],
         }

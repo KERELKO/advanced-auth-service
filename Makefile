@@ -8,15 +8,15 @@ tests:
 
 .PHONY: psql
 psql:
-	${EXEC} ${DB} psql -U admin -d auth-db -h postgres -p 5432 -W admin
+	${EXEC} ${DB} psql -U postgres -d postgres
 
 .PHONY: shell
 shell:
 	${EXEC} ${APP} bash
 
-.PHONY: makemigrations
-makemigrations:
-	${EXEC} ${APP} alembic revision --autogenerate -m "Initial tables"
+.PHONY: migrations
+migrations:
+	${EXEC} ${APP} alembic revision --autogenerate -m "$(msg)"
 
 .PHONY: migrate
 migrate:
