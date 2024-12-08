@@ -7,7 +7,7 @@ class AddPermissionDTO:
     codename: str
 
 
-@dataclass(repr=False, slots=True)
+@dataclass(slots=True)
 class PermissionDTO:
     id: int
     name: str

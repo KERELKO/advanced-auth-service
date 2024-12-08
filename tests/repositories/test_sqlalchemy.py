@@ -15,11 +15,10 @@ from src.core.storage.repositories.sqlalchemy import (
     SQLAlchemyUserRepository,
 )
 
-from .conftest import db_user, disposable_data
+from .conftest import registered_user, disposable_data
 
 
-@pytest.mark.skip
-async def test_add_and_get_methods_of_user_repository(add_user_dto: AddUserDTO) -> None:
+async def test_methods_of_user_repository(add_user_dto: AddUserDTO) -> None:
     async with disposable_data():
         repo = container.resolve(IUserRepository)
         assert isinstance(repo, SQLAlchemyUserRepository)
@@ -38,11 +37,11 @@ async def test_add_and_get_methods_of_user_repository(add_user_dto: AddUserDTO) 
             user = await repo.get(id=-1)
 
 
-async def test_can_update_user(
+async def test_can_update_user_in_user_repository(
     add_user_dto: AddUserDTO, add_permission_dto: AddPermissionDTO,
 ) -> None:
     async with disposable_data():
-        async with db_user(add_user_dto) as user:
+        async with registered_user(add_user_dto) as user:
             user_repo = container.resolve(IUserRepository)
             permission_repo = container.resolve(IPermissionRepository)
             perm = await permission_repo.add(add_permission_dto)
@@ -65,13 +64,13 @@ async def test_can_update_user(
             assert user_dto.permissions
 
 
-@pytest.mark.skip
-async def test_add_and_get_methods_of_permission_repository(
+async def test_methods_of_permission_repository(
     add_permission_dto: AddPermissionDTO,
     add_user_dto: AddUserDTO,
 ) -> None:
     async with disposable_data():
-        async with db_user(add_user_dto) as _:
+        async with registered_user(add_user_dto) as user:
+            user_repo = container.resolve(IUserRepository)
             repo = container.resolve(IPermissionRepository)
             assert isinstance(repo, SQLAlchemyPermissionRepository)
 
@@ -92,4 +91,16 @@ async def test_add_and_get_methods_of_permission_repository(
 
             assert permission_2 == permission_1
 
-            # added_user = await user_repo.add(AddUserDTO('asdasdasd', email='asdasd@gmailcom'))
+            user_dto = await user_repo.update(
+                user_id=user.id, dto=UpdateUserDTO(
+                    permissions=[added_permission.codename]
+                )
+            )
+            logger.info(user_dto)
+
+            assert permission_2 in user_dto.permissions
+
+            permissions = await repo.get_by_user_id(user.id)
+            logger.info(permissions)
+
+            assert permission_2 in permissions

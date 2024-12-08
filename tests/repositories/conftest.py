@@ -43,7 +43,7 @@ async def disposable_data() -> AsyncGenerator[None, None]:
 
 
 @asynccontextmanager
-async def db_user(add_user_dto: AddUserDTO) -> AsyncGenerator[UserDTO, None]:
+async def registered_user(add_user_dto: AddUserDTO) -> AsyncGenerator[UserDTO, None]:
     """Clear database after usage"""
     db = container.resolve(Database)
     repo = container.resolve(IUserRepository)

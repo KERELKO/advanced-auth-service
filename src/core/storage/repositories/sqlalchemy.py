@@ -1,5 +1,6 @@
 from dataclasses import asdict
 
+from loguru import logger
 import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -24,6 +25,12 @@ class SQLAlchemyUserRepository:
                 raise ObjectDoesNotExist(id=id)
             return to_dto(UserDTO, user.to_dict())
 
+    async def exists(self, user_id: int) -> bool:
+        async with self.db.session_factory() as session:
+            stmt = sa.select(UserORM).where(UserORM.id == user_id).limit(1)
+            result = (await session.execute(stmt)).scalar_one_or_none()
+            return True if result else False
+
     async def add(self, dto: AddUserDTO) -> UserDTO:
         async with self.db.session_factory() as session:
             stmt = sa.select(UserORM).where(UserORM.username == dto.username).limit(1)
@@ -33,6 +40,7 @@ class SQLAlchemyUserRepository:
             new_user = UserORM(**asdict(dto))
             session.add(new_user)
             await session.commit()
+            logger.info(f'Added new user with id "{new_user.id}"')
             return to_dto(UserDTO, new_user.to_dict())
 
     async def get_by_username(self, username: str) -> UserDTO:
@@ -68,6 +76,7 @@ class SQLAlchemyUserRepository:
 
             user_dto = to_dto(UserDTO, user.to_dict())
             await session.commit()
+            logger.info(f'Updated user data with id "{user_dto.id}"')
             return user_dto
 
     async def __get_unique_user_by_id(self, user_id: int, session: AsyncSession) -> UserORM | None:
@@ -113,4 +122,5 @@ class SQLAlchemyPermissionRepository:
             permission = PermissionORM(**asdict(data))
             session.add(permission)
             await session.commit()
+            logger.info(f'Add new permission with id "{permission.id}"')
             return to_dto(PermissionDTO, permission.to_dict())

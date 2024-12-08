@@ -5,6 +5,9 @@ import datetime
 from sqlalchemy import Boolean, DateTime, String, func, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.core.dto.permissions import PermissionDTO
+from src.core.utils import to_dto
+
 from .common import Base
 from .permissions import PermissionORM, permission_user_table
 
@@ -61,5 +64,7 @@ class UserORM(Base):
             'mfa_secret': self.mfa_secret,
             'oauth_provider': self.oauth_provider,
             'oauth_provider_id': self.oauth_provider_id,
-            'permissions': [permission.to_dict() for permission in self.permissions],
+            'permissions': [
+                to_dto(PermissionDTO, permission.to_dict()) for permission in self.permissions
+            ],
         }

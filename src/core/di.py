@@ -11,6 +11,7 @@ from src.core.storage.repositories.sqlalchemy import (
 )
 from src.core.storage.orm.db import Database
 from src.modules.authentication.service import AuthenticationService
+from src.modules.authorization.service import AuthorizationService
 
 
 T = t.TypeVar('T')
@@ -35,6 +36,7 @@ class Container:
         )
 
         container.register(AuthenticationService)
+        container.register(AuthorizationService)
 
         return container
 

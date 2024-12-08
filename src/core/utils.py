@@ -1,5 +1,6 @@
 import typing as t
 from dataclasses import Field as _Field
+from venv import logger
 
 from src.core.exceptions import ObjectDoesNotExist
 
@@ -20,5 +21,6 @@ def raise_exc(exception: type[Exception] | Exception) -> t.NoReturn:
     raise exception
 
 
-def not_found(id: int) -> t.NoReturn:
+def not_found(id: t.Any) -> t.NoReturn:
+    logger.info(f'Object does not exist: id={id}')
     raise ObjectDoesNotExist(id=id)
