@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from src.core.config import Config
+from src.core.exceptions import ApplicationException
 
 from .models.common import Base
 
@@ -20,6 +21,16 @@ class Database:
         self.session_factory = async_sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
+        self.clear_db = self.__clear_db
+
+    async def __clear_db(self) -> None:
+        if self.config.env != 'dev':
+            raise ApplicationException('Cannot clear database in non DEV environment')
+        async with self.engine.connect() as connection:
+            await connection.execute(
+                text('TRUNCATE TABLE permissions, permission_user, users RESTART IDENTITY CASCADE;')
+            )
+            await connection.commit()
 
     def init(self) -> None:
         loop = asyncio.get_event_loop()

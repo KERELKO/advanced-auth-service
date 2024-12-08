@@ -8,9 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .common import Base
 from .permissions import PermissionORM, permission_user_table
 
-if t.TYPE_CHECKING:
-    from .permissions import PermissionORM
-
 
 class UserORM(Base):
     __tablename__ = 'users'
@@ -57,5 +54,5 @@ class UserORM(Base):
             'mfa_secret': self.mfa_secret,
             'oauth_provider': self.oauth_provider,
             'oauth_provider_id': self.oauth_provider_id,
-            'permissions': [permission.codename for permission in self.permissions],
+            'permissions': [permission.to_dict() for permission in self.permissions],
         }

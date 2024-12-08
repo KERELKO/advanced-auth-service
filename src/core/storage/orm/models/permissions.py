@@ -21,7 +21,7 @@ class PermissionORM(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    codename: Mapped[str] = mapped_column(String(30), nullable=False)
+    codename: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
 
     def to_dict(self) -> dict[str, t.Any]:
         return {'id': self.id, 'name': self.name, 'codename': self.codename}

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import os
+from typing import Literal
 from passlib.context import CryptContext  # type: ignore
 import secrets
 
@@ -11,8 +12,7 @@ load_dotenv()
 
 @dataclass(eq=False, repr=False, frozen=True, slots=True)
 class Config:
-    # 'dev', 'prod', 'stage'
-    env: str = os.getenv('ENV', 'dev')
+    env: Literal['dev', 'prod', 'stage'] = os.getenv('ENV', 'dev')  # type: ignore
 
     postgres_dialect: str = 'postgresql+asyncpg'
 

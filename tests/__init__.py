@@ -1,22 +1,22 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-import punq
 import pytest
 from faker import Faker
 
-from src.core import config
-from src.core.config import Config
 from src.core.di import Container
-from src.core.dto.users import AddUserDTO, UserDTO
-from src.core.storage.orm.db import Database
-from src.core.storage.repositories.sqlalchemy import SQLAlchemyUserRepository
-from src.modules.authentication.dto import LoginUserDTO, RegisterUserDTO
+from src.core.dto.users import (
+    UserDTO,
+)
+from src.modules.authentication.dto import (
+    RegisterUserDTO,
+)
 from src.modules.authentication.service import AuthenticationService
+
 
 _container = Container()
 
-faker = Faker()
+faker = Faker('en_US')
 
 
 @pytest.fixture
