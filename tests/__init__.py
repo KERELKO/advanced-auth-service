@@ -38,7 +38,7 @@ def container() -> Container:
 async def registered_user(container: Container, register_user_dto) -> AsyncGenerator[UserDTO, None]:
     service = container.resolve(AuthenticationService)
     try:
-        user_dto = await service.register(register_user_dto)
+        user_dto = await service.register_user(register_user_dto)
         yield user_dto
     finally:
         ...

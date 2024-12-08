@@ -51,7 +51,7 @@ class AuthenticationService:
 
         return Token(access_token), Token(refresh_token)
 
-    async def refresh_token(self, access_token: str, refresh_token: str) -> tuple[Token, Token]:
+    async def refresh_token(self, refresh_token: str) -> tuple[Token, Token]:
         """
         Return new access and refresh tokens if refresh token is active, otherwise throw
         `InvalidTokenException`.
@@ -92,7 +92,7 @@ class AuthenticationService:
         except jwt.DecodeError:
             return False
 
-    async def register(self, dto: RegisterUserDTO) -> UserDTO:
+    async def register_user(self, dto: RegisterUserDTO) -> UserDTO:
         """Register a new user."""
         hashed_password = self._get_password_hash(dto.password)
         data = asdict(dto)

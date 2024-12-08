@@ -38,16 +38,19 @@ class AuthorizationService:
             return False
 
     async def get_user_permissions(self, user_id: int) -> list[PermissionDTO]:
+        """Return all permissions for the specific user"""
         user = await self.user_repository.get(id=user_id) or not_found(id=user_id)
         logger.info(f'Retieved user permissions: {[p.codename for p in user.permissions]}')
         return user.permissions
 
     async def register_permission(self, dto: AddPermissionDTO) -> PermissionDTO:
+        """Register new permission"""
         permission = await self.permission_repository.add(dto)
         logger.info(f'Registed new permission: id={permission.id}, codename={permission.codename}')
         return permission
 
     async def grant_permissions(self, user_id: int, permissions: set[str]) -> UserDTO:
+        """Grant permissions for the user"""
         if await self.user_repository.exists(user_id) is False:
             not_found(id=user_id)
         dto = UpdateUserDTO(permissions=list(permissions))

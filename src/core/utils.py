@@ -1,6 +1,6 @@
 import typing as t
 from dataclasses import Field as _Field
-from venv import logger
+from loguru import logger
 
 from src.core.exceptions import ObjectDoesNotExist
 

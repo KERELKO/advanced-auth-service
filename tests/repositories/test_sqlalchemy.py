@@ -15,7 +15,7 @@ from src.core.storage.repositories.sqlalchemy import (
     SQLAlchemyUserRepository,
 )
 
-from .conftest import registered_user, disposable_data
+from tests.conftest import registered_user, disposable_data
 
 
 async def test_methods_of_user_repository(add_user_dto: AddUserDTO) -> None:

@@ -9,7 +9,7 @@ from tests import _container as container
 async def test_can_register_and_login_user(register_user_dto: RegisterUserDTO) -> None:
     service = container.resolve(AuthenticationService)
 
-    user_dto = await service.register(register_user_dto)
+    user_dto = await service.register_user(register_user_dto)
     logger.info(user_dto)
     assert user_dto.username == register_user_dto.username
 
