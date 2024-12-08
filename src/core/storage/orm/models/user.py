@@ -37,6 +37,7 @@ class UserORM(Base):
         secondary=permission_user_table,
         lazy='noload',
         backref='users',
+        passive_deletes=True,
     )
 
     def __str__(self) -> str:

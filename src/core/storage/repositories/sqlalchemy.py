@@ -1,10 +1,11 @@
 from dataclasses import asdict
 
+from loguru import logger
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
 from src.core.dto.permissions import AddPermissionDTO, PermissionDTO
-from src.core.dto.users import AddUserDTO, UserDTO
+from src.core.dto.users import AddUserDTO, UpdateUserDTO, UserDTO
 from src.core.exceptions import NotFoundByFilters, ObjectDoesNotExist
 from src.core.storage.orm.db import Database
 from src.core.storage.orm.models import UserORM, PermissionORM
@@ -42,6 +43,34 @@ class SQLAlchemyUserRepository:
             if not user:
                 raise NotFoundByFilters(filters={'username': username})
             return to_dto(UserDTO, user.to_dict())
+
+    # TODO: optimize
+    async def update(self, user_id: int, dto: UpdateUserDTO) -> UserDTO:
+        async with self.db.session_factory() as session:
+            user = await session.get(UserORM, ident=user_id)
+            if not user:
+                raise ObjectDoesNotExist(id=user_id)
+            if dto.permissions:
+                fetch_permissions_stmt = sa.select(PermissionORM).where(
+                    PermissionORM.codename.in_(dto.permissions),
+                )
+                permissions = (await session.execute(fetch_permissions_stmt)).scalars().all()
+                logger.info(permissions)
+                user.permissions = list(permissions)
+                dto.permissions = None
+            values = {k: v for k, v in asdict(dto).items() if v is not None}
+            logger.info(values)
+            for field, value in values.items():
+                if hasattr(user, field):
+                    setattr(user, field, value)
+
+            logger.info(user.permissions)
+            await session.commit()
+            fetch_user_stmt = self.__construct_user_select().where(UserORM.id == user_id)
+            fetched_user = (await session.execute(fetch_user_stmt)).unique().scalar_one_or_none()
+            if not fetched_user:
+                raise ObjectDoesNotExist(id=user_id)
+            return to_dto(UserDTO, fetched_user.to_dict())
 
 
 class SQLAlchemyPermissionRepository:

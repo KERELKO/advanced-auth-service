@@ -5,14 +5,17 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .common import Base
 
-if t.TYPE_CHECKING:
-    pass
 
 permission_user_table = Table(
     'permission_user',
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
-    Column('permission_id', Integer, ForeignKey('permissions.id'), primary_key=True),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete='CASCADE'), primary_key=True),
+    Column(
+        'permission_id',
+        Integer,
+        ForeignKey('permissions.id', ondelete='CASCADE'),
+        primary_key=True,
+    ),
 )
 
 

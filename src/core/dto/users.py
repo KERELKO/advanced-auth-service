@@ -4,7 +4,7 @@ import datetime
 from src.core.dto.permissions import PermissionDTO
 
 
-@dataclass(repr=False, slots=True)
+@dataclass(repr=True, slots=True, eq=False)
 class UserDTO:
     id: int
     username: str
@@ -39,8 +39,16 @@ class UserOutDTO:
     email: str | None
 
 
-@dataclass(eq=False, repr=False, slots=True)
+@dataclass(eq=False, slots=True)
 class UpdateUserDTO:
     username: str | None = None
     email: str | None = None
-    permissions: set[str] = field(default_factory=set)
+
+    permissions: list[str] | None = None
+    hashed_password: str | None = None
+
+    mfa_enabled: bool = False
+    mfa_secret: str | None = None
+
+    oauth_provider: str | None = None
+    oauth_provider_id: str | None = None

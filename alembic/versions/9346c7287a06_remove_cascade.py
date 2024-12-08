@@ -1,8 +1,8 @@
-"""asd
+"""Remove cascade
 
-Revision ID: f5ce1e4f957f
-Revises: 6b74dbf2bf21
-Create Date: 2024-12-07 21:40:12.944582
+Revision ID: 9346c7287a06
+Revises: 506a5dea3930
+Create Date: 2024-12-08 13:39:50.996270
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f5ce1e4f957f'
-down_revision: Union[str, None] = '6b74dbf2bf21'
+revision: str = '9346c7287a06'
+down_revision: Union[str, None] = '506a5dea3930'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
