@@ -28,3 +28,12 @@ class PermissionORM(Base):
 
     def to_dict(self) -> dict[str, t.Any]:
         return {'id': self.id, 'name': self.name, 'codename': self.codename}
+
+    def __str__(self) -> str:
+        return self.codename
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def __eq__(self, other: 'PermissionORM') -> bool:
+        return self.id == other.id

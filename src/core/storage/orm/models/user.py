@@ -13,7 +13,7 @@ class UserORM(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(30), nullable=False)
+    username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
     email: Mapped[str | None] = mapped_column(String(40), nullable=True)
     hashed_password: Mapped[str | None] = mapped_column(String(200), nullable=True)
     mfa_enabled: Mapped[bool] = mapped_column(
@@ -42,6 +42,12 @@ class UserORM(Base):
 
     def __str__(self) -> str:
         return self.username
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def __eq__(self, other: 'PermissionORM') -> bool:
+        return self.id == other.id
 
     def to_dict(self) -> dict[str, t.Any]:
         return {

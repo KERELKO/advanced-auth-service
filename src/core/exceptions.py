@@ -18,6 +18,15 @@ class ObjectDoesNotExist(ApplicationException):
 
 
 @dataclass(eq=False)
+class ObjectAlreadyExistsException(ApplicationException):
+    filters: dict[str, t.Any]
+
+    @property
+    def msg(self) -> str:
+        return f'Object already exists: {self.filters}'
+
+
+@dataclass(eq=False)
 class NotFoundByFilters(ObjectDoesNotExist):
     id: int = -1
     filters: dict[str, t.Any] = field(kw_only=True)

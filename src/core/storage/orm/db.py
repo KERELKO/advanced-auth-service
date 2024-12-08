@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-
 from src.core.config import Config
 from src.core.exceptions import ApplicationException
 
@@ -17,9 +16,14 @@ from .models.common import Base
 class Database:
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.engine = create_async_engine(config.postgres_connection_string)
+        self.engine = create_async_engine(
+            config.postgres_connection_string,
+            isolation_level='SERIALIZABLE',
+        )
         self.session_factory = async_sessionmaker(
-            self.engine, class_=AsyncSession, expire_on_commit=False
+            self.engine,
+            class_=AsyncSession,
+            expire_on_commit=False,
         )
         self.clear_db = self.__clear_db
 
