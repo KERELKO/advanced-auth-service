@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from datetime import datetime, timedelta
-
+from functools import singledispatchmethod
 import jwt
 from loguru import logger
 
@@ -20,7 +20,17 @@ class AuthenticationService:
         self._config = config
         self.context = config.crypto_context
 
-    async def login(self, dto: LoginUserDTO) -> tuple[Token, Token]:
+    @singledispatchmethod
+    async def login(self, dto) -> tuple[Token, Token]:  # type: ignore
+        """
+        Generic method::
+
+            login(self, dto: UserDTO) -> tuple[Token, Token]
+            login(self, dto: LoginUserDTO) -> tuple[Token, Token]
+        """
+
+    @login.register
+    async def _(self, dto: LoginUserDTO) -> tuple[Token, Token]:
         """
         Verifies user data and return a tuple containing access and refresh tokens.
         """
@@ -29,27 +39,14 @@ class AuthenticationService:
         if user is None:
             raise ObjectDoesNotExist(id=dto.username)
 
-        # TODO: handle if hashed_password is None
-        if not self._verify_password(dto.password, user.hashed_password):  # type: ignore
+        if not self.verify_password(dto.password, user.hashed_password or ''):
             raise IncorrectPasswordException()
 
-        access_token_exp, refresh_token_exp = self.__create_tokens_exp()
+        return self.__create_user_tokens(user)
 
-        access_token_payload = TokenPayload(
-            user_id=user.id,
-            sub=user.username,
-            exp=access_token_exp,
-        )
-        refresh_token_payload = TokenPayload(
-            user_id=user.id,
-            sub=user.username,
-            exp=refresh_token_exp,
-        )
-
-        access_token = self.create_token(access_token_payload)
-        refresh_token = self.create_token(refresh_token_payload)
-
-        return Token(access_token), Token(refresh_token)
+    @login.register
+    async def _(self, dto: UserDTO) -> tuple[Token, Token]:
+        return self.__create_user_tokens(dto)
 
     async def refresh_token(self, refresh_token: str) -> tuple[Token, Token]:
         """
@@ -95,10 +92,9 @@ class AuthenticationService:
     async def register_user(self, dto: RegisterUserDTO) -> UserDTO:
         """Register a new user."""
         hashed_password = self._get_password_hash(dto.password)
-        data = asdict(dto)
-        data.pop('password')
-        data['hashed_password'] = hashed_password
-        return await self.repo.add(AddUserDTO(**data))
+        dto_dict = {**asdict(dto), 'hashed_password': hashed_password}
+        dto_dict.pop('password')
+        return await self.repo.add(AddUserDTO(**dto_dict))
 
     def create_token(
         self,
@@ -113,7 +109,7 @@ class AuthenticationService:
         )
         return encoded_jwt
 
-    def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
+    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """Hash plain password and check if it equals the hashed one."""
         return self.context.verify(plain_password, hashed_password)
 
@@ -129,7 +125,6 @@ class AuthenticationService:
                 key=self._config.secret_key,
                 algorithms=self._config.algorithms,
             )
-            logger.info(f'Decoded token data: {data}')
             return TokenPayload(**data)
         except jwt.ExpiredSignatureError:
             raise TokenExpiredException(token)
@@ -153,3 +148,23 @@ class AuthenticationService:
         )
 
         return access_token_exp, refresh_token_exp
+
+    def __create_user_tokens(self, user: UserDTO) -> tuple[Token, Token]:
+        access_token_exp, refresh_token_exp = self.__create_tokens_exp()
+
+        access_token_payload = TokenPayload(
+            user_id=user.id,
+            sub=user.username,
+            exp=access_token_exp,
+        )
+        refresh_token_payload = TokenPayload(
+            user_id=user.id,
+            sub=user.username,
+            exp=refresh_token_exp,
+        )
+
+        access_token = self.create_token(access_token_payload)
+        refresh_token = self.create_token(refresh_token_payload)
+
+        logger.info(f'Logged in user: id={user.id}')
+        return Token(access_token), Token(refresh_token)

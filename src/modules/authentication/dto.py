@@ -12,4 +12,6 @@ class RegisterUserDTO:
     username: str
     password: str
 
+    permissions: list[str] | None = None
     email: str | None = None
+    mfa_secret: str | None = None

@@ -28,6 +28,8 @@ class Config:
     crypto_context: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
     secret_key: str = os.getenv('SECRET_KEY', secrets.token_hex(32))
 
+    default_permission_set: tuple[str, ...] = ('me_read', 'me_update', 'me_delete')
+
     @property
     def postgres_connection_string(self) -> str:
         user_pwd = f'{self.postgres_user}:{self.postgres_password}'

@@ -16,7 +16,7 @@ class UserORM(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
+    username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True, index=True)
     email: Mapped[str | None] = mapped_column(String(40), nullable=True)
     hashed_password: Mapped[str | None] = mapped_column(String(200), nullable=True)
     mfa_enabled: Mapped[bool] = mapped_column(

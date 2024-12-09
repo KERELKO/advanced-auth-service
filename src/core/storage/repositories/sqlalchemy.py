@@ -34,13 +34,29 @@ class SQLAlchemyUserRepository:
     async def add(self, dto: AddUserDTO) -> UserDTO:
         async with self.db.session_factory() as session:
             stmt = sa.select(UserORM).where(UserORM.username == dto.username).limit(1)
-            result = (await session.execute(stmt)).scalar_one_or_none()
-            if result is not None:
+            exists = (await session.execute(stmt)).scalar_one_or_none()
+            if exists is not None:
                 raise ObjectAlreadyExistsException({'username': dto.username})
-            new_user = UserORM(**asdict(dto))
+
+            if dto.permissions:
+                fetch_permissions_stmt = sa.select(PermissionORM).where(
+                    PermissionORM.codename.in_(dto.permissions),
+                )
+                _permissions = (await session.execute(fetch_permissions_stmt)).scalars().all()
+                if len(_permissions) != len(dto.permissions):
+                    logger.warning(
+                        'Some permissions do not exist: '
+                        f'Stored permissions: {[p.codename for p in _permissions]}, '
+                        f'Requested permissions: {[dto.permissions]}'
+                    )
+                dto.permissions = _permissions or None  # type: ignore
+
+            values = {k: v for k, v in asdict(dto).items() if v is not None}
+            new_user = UserORM(**values)
+
             session.add(new_user)
             await session.commit()
-            logger.info(f'Added new user with id "{new_user.id}"')
+            logger.info(f'Added user: id={new_user.id}')
             return to_dto(UserDTO, new_user.to_dict())
 
     async def get_by_username(self, username: str) -> UserDTO:
@@ -76,7 +92,7 @@ class SQLAlchemyUserRepository:
 
             user_dto = to_dto(UserDTO, user.to_dict())
             await session.commit()
-            logger.info(f'Updated user data with id "{user_dto.id}"')
+            logger.info(f'Updated user: id={user_dto.id}')
             return user_dto
 
     async def __get_unique_user_by_id(self, user_id: int, session: AsyncSession) -> UserORM | None:
@@ -122,5 +138,5 @@ class SQLAlchemyPermissionRepository:
             permission = PermissionORM(**asdict(data))
             session.add(permission)
             await session.commit()
-            logger.info(f'Add new permission with id "{permission.id}"')
+            logger.info(f'Added permission: id={permission.id}, codename={permission.codename}')
             return to_dto(PermissionDTO, permission.to_dict())

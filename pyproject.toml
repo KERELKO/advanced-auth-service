@@ -16,6 +16,8 @@ punq = "^0.7.0"
 alembic = "^1.14.0"
 pyjwt = "^2.10.1"
 fastapi = "^0.115.6"
+pyotp = "^2.9.0"
+qrcode = "^8.0"
 
 
 [tool.poetry.group.dev.dependencies]

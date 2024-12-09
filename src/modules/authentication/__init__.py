@@ -4,3 +4,8 @@ Module that handle authentication. Capabilities:
 * logout
 * registration
 """
+
+from .service import AuthenticationService
+
+
+__all__ = ['AuthenticationService']

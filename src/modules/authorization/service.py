@@ -21,6 +21,7 @@ class AuthorizationService:
         permission_repository: IPermissionRepository,
     ) -> None:
         self._config = config
+        self.default_permission_set = list(config.default_permission_set)
         self.user_repository = user_repository
         self.permission_repository = permission_repository
 
@@ -31,16 +32,16 @@ class AuthorizationService:
         user = await self.user_repository.get(id=user_id) or not_found(id=user_id)
         user_permissions = {p.codename for p in user.permissions}
         if bool(user_permissions) and user_permissions <= permissions:
-            logger.info(f'User with id "{user_id}" has required permissions from the set')
+            logger.info(f'Enough permission for the user: id={user_id}')
             return True
         else:
-            logger.info(f'Lack for permissions for the user with id "{user_id}"')
+            logger.info(f'Lack of permissions for the user: id={user_id}')
             return False
 
     async def get_user_permissions(self, user_id: int) -> list[PermissionDTO]:
         """Return all permissions for the specific user"""
         user = await self.user_repository.get(id=user_id) or not_found(id=user_id)
-        logger.info(f'Retieved user permissions: {[p.codename for p in user.permissions]}')
+        logger.info(f'User permission set (id={user_id}): {[p.codename for p in user.permissions]}')
         return user.permissions
 
     async def register_permission(self, dto: AddPermissionDTO) -> PermissionDTO:
@@ -55,5 +56,5 @@ class AuthorizationService:
             not_found(id=user_id)
         dto = UpdateUserDTO(permissions=list(permissions))
         updated_user = await self.user_repository.update(user_id, dto=dto)
-        logger.info(f'Granted permissions for the user with id "{user_id}"')
+        logger.info(f'Granted permissions for the user: id={user_id}, permissions={permissions}')
         return updated_user
