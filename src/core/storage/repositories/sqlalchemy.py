@@ -52,9 +52,9 @@ class SQLAlchemyUserRepository:
                 dto.permissions = _permissions or None  # type: ignore
 
             values = {k: v for k, v in asdict(dto).items() if v is not None}
-            new_user = UserORM(**values)
+            user_orm = UserORM(**values)
 
-            session.add(new_user)
+            new_user = await session.merge(user_orm)
             await session.commit()
             logger.info(f'Added user: id={new_user.id}')
             return to_dto(UserDTO, new_user.to_dict())

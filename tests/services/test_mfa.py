@@ -26,6 +26,7 @@ async def test_cannot_pass_mfa() -> None:
     code = service.generate_one_time_password(secret_key)
     logger.info(f'Code: {code}')
 
-    await asyncio.sleep(service.interval + 5)
+    logger.info(f'Wait for {(s := service.interval + 5)} seconds to check if code will be invalid')
+    await asyncio.sleep(s)
 
     assert service.verify_mfa_code(secret_key, code.value) is False

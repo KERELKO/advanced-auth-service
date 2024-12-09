@@ -65,6 +65,7 @@ async def disposable_data() -> AsyncGenerator[None, None]:
         yield None
     finally:
         await db.clear_db()
+        await db.insert_data()
 
 
 @asynccontextmanager

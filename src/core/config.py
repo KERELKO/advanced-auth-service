@@ -28,7 +28,7 @@ class Config:
     crypto_context: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
     secret_key: str = os.getenv('SECRET_KEY', secrets.token_hex(32))
 
-    default_permission_set: tuple[str, ...] = ('me_read', 'me_update', 'me_delete')
+    default_permission_set: tuple[str, ...] = ('read_me', 'update_me', 'delete_me')
 
     @property
     def postgres_connection_string(self) -> str:

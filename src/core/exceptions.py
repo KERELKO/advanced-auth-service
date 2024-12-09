@@ -1,5 +1,8 @@
-from dataclasses import dataclass, field
 import typing as t
+from dataclasses import (
+    dataclass,
+    field,
+)
 
 
 class ApplicationException(Exception):
@@ -34,16 +37,6 @@ class NotFoundByFilters(ObjectDoesNotExist):
     @property
     def msg(self) -> str:
         return f'Failed to find object with filters: {self.filters}'
-
-
-@dataclass(eq=False)
-class AccessDenied(ApplicationException):
-    permission_codenames: list[str]
-    user_id: int | None = None
-
-    @property
-    def msg(self) -> str:
-        return f'Access denied: required permission: {self.permission_codenames}'
 
 
 @dataclass(eq=False)

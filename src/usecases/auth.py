@@ -5,23 +5,23 @@ from src.core.dto.users import UserDTO
 from src.core.exceptions import ApplicationException
 from src.modules.authentication import AuthenticationService
 from src.modules.authentication.dto import (
-    LoginUserDTO,
-    RegisterUserDTO,
+    LoginUserDTO as _LoginUserDTO,
+    RegisterUserDTO as _RegisterUserDTO,
 )
 from src.modules.authorization import AuthorizationService
 from src.modules.mfa import MFAService
-from src.modules.mfa.exceptions import InvalidCodeException
+from src.modules.mfa.exceptions import InvalidCodeException, InvalidSecretKeyException
 
 from . import UseCase
 
 
 @dataclass(eq=False, repr=False, slots=True)
-class RegisterUser(UseCase[RegisterUserDTO, UserDTO]):
+class RegisterUser(UseCase[_RegisterUserDTO, UserDTO]):
     authentication_service: AuthenticationService
     authorization_service: AuthorizationService
     mfa_service: MFAService
 
-    async def __call__(self, dto: RegisterUserDTO) -> UserDTO:
+    async def __call__(self, dto: _RegisterUserDTO) -> UserDTO:
         mfa_secret = self.mfa_service.generate_secret()
         user_permissions = dto.permissions or self.authorization_service.default_permission_set
 
@@ -33,12 +33,12 @@ class RegisterUser(UseCase[RegisterUserDTO, UserDTO]):
 
 
 @dataclass(eq=False, repr=False, slots=True)
-class LoginUser(UseCase[LoginUserDTO, tuple[Token, Token] | UserDTO]):
+class LoginUser(UseCase[_LoginUserDTO, tuple[Token, Token] | UserDTO]):
     authorization_service: AuthorizationService
     authentication_service: AuthenticationService
     mfa_service: MFAService
 
-    async def __call__(self, dto: LoginUserDTO) -> tuple[Token, Token] | UserDTO:
+    async def __call__(self, dto: _LoginUserDTO) -> tuple[Token, Token] | UserDTO:
         """Return `access` and `refresh` tokens if user logged in
         otherwise return `UserDTO` instance indicating that `MFA required`
 
@@ -51,7 +51,9 @@ class LoginUser(UseCase[LoginUserDTO, tuple[Token, Token] | UserDTO]):
         if self.authentication_service.verify_password(dto.password, hashed_password) is False:
             raise ApplicationException("Passwords didn't match")
 
-        if user.mfa_enabled and user.mfa_secret:
+        if user.mfa_enabled and not user.mfa_secret:
+            raise InvalidSecretKeyException(user.mfa_secret)
+        elif user.mfa_enabled and user.mfa_secret:
             return user
 
         tokens = await self.authentication_service.login(user)
@@ -59,7 +61,7 @@ class LoginUser(UseCase[LoginUserDTO, tuple[Token, Token] | UserDTO]):
 
     async def verify_mfa_code(self, user: UserDTO, code: str) -> tuple[Token, Token]:
         if not user.mfa_secret:
-            raise ApplicationException('MFA is enabled, but no MFA secret is set for this user')
+            raise InvalidSecretKeyException(user.mfa_secret)
         if self.mfa_service.verify_mfa_code(user.mfa_secret, code) is False:
             raise InvalidCodeException(code)
 

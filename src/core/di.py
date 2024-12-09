@@ -1,6 +1,6 @@
 import typing as t
 
-import punq  # type: ignore
+import punq
 
 from src.core import config
 from src.core.config import Config
@@ -13,6 +13,7 @@ from src.core.storage.orm.db import Database
 from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
 from src.modules.mfa.service import MFAService
+from src.usecases.auth import LoginUser, RegisterUser
 
 
 T = t.TypeVar('T')
@@ -36,9 +37,12 @@ class Container:
             scope=punq.Scope.singleton,
         )
 
-        container.register(AuthenticationService)
-        container.register(AuthorizationService)
-        container.register(MFAService, instance=MFAService())
+        container.register(AuthenticationService, scope=punq.Scope.singleton)
+        container.register(AuthorizationService, scope=punq.Scope.singleton)
+        container.register(MFAService, instance=MFAService(), scope=punq.Scope.singleton)
+
+        container.register(RegisterUser)
+        container.register(LoginUser)
 
         return container
 
