@@ -1,19 +1,32 @@
 from pathlib import Path
+
 from loguru import logger
-from src.core.dto.users import UpdateUserDTO, UserDTO
-from src.core.storage.repositories.base import IUserRepository
-from src.modules.mfa.service import MFAService
+from src.modules.mfa.exceptions import InvalidCodeException
 from tests import _container as container
 from tests.conftest import disposable_data
 
+from src.core.dto.users import (
+    UpdateUserDTO,
+    UserDTO,
+)
+from src.core.storage.repositories.base import IUserRepository
 from src.modules.authentication.dto import (
     LoginUserDTO,
     RegisterUserDTO,
 )
+from src.modules.mfa.service import MFAService
 from src.usecases.auth import (
     LoginUser,
     RegisterUser,
 )
+
+MESSAGE = """
+###################################################################
+# Open your authenticator and scan QR code from the created file. #
+# After scanning you will see 6-digits code that will be updating #
+# every 30 seconds, you need to enter it.                         #
+###################################################################
+"""
 
 
 async def test_login_user_with_mfa_usecase(register_user_dto: RegisterUserDTO):
@@ -47,15 +60,20 @@ async def test_login_user_with_mfa_usecase(register_user_dto: RegisterUserDTO):
 
         assert qrcode_file.exists() is True
 
-        code = input(
-            '#'*70 + '\n'
-            '# Open your authenticator and scan QR code from the created file.\n'
-            f'# ({qrcode_file})\n'
-            '# Enter 6-digits code: '
-        )
-        qrcode_file.unlink()
+        logger.info(f'Created file with QR code: {qrcode_file}')
 
-        access_token, refresh_token = await login_user.verify_mfa_code(user, code)
+        print(MESSAGE)
+        print(f'File location: {qrcode_file.absolute()}')
+
+        flag = True
+        while flag:
+            code = input('Enter 6-digits code: ')
+            try:
+                access_token, refresh_token = await login_user.verify_mfa_code(user, code)
+                flag = False
+                qrcode_file.unlink()
+            except InvalidCodeException:
+                logger.error('Invalid code. try again')
 
         logger.info(f'Access token: {access_token}\nRefresh token: {refresh_token}')
         assert True
