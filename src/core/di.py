@@ -12,6 +12,7 @@ from src.core.storage.repositories.sqlalchemy import (
 from src.core.storage.orm.db import Database
 from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
+from src.modules.mfa.service import MFAService
 
 
 T = t.TypeVar('T')
@@ -37,6 +38,7 @@ class Container:
 
         container.register(AuthenticationService)
         container.register(AuthorizationService)
+        container.register(MFAService, instance=MFAService())
 
         return container
 

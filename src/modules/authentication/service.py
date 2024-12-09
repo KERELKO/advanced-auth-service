@@ -23,7 +23,7 @@ class AuthenticationService:
     @singledispatchmethod
     async def login(self, dto) -> tuple[Token, Token]:  # type: ignore
         """
-        Generic method::
+        Generic login method::
 
             login(self, dto: UserDTO) -> tuple[Token, Token]
             login(self, dto: LoginUserDTO) -> tuple[Token, Token]

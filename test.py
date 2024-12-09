@@ -6,6 +6,14 @@ import qrcode
 secret_key = pyotp.random_base32()  # Цей ключ потрібно зберігати безпечно!
 totp = pyotp.TOTP(secret_key)
 
+otp_uri = pyotp.totp.TOTP(secret_key).provisioning_uri(
+    name='kyrylbarabash@gmail.com', issuer_name='MySecureApp'
+)
+
+# Створюємо QR-код
+qr = qrcode.make(otp_uri)
+qr.save(open('test_qrcode.png', '+wb'))
+
 print(f'Ваш секретний ключ для MFA (зберігайте його безпечно!): {secret_key}')
 print(f'Ваш одноразовий код (тільки для перевірки роботи): {totp.now()}')
 
@@ -39,13 +47,6 @@ def login():
 
     # Другий фактор: перевірка TOTP
     mfa_code = input('Введіть одноразовий код із додатку: ')
-    otp_uri = pyotp.totp.TOTP(secret_key).provisioning_uri(
-        name='user@example.com', issuer_name='MySecureApp'
-    )
-
-    # Створюємо QR-код
-    qr = qrcode.make(otp_uri)
-    qr.show()
     if not verify_mfa_code(user_data['mfa_key'], mfa_code):
         print('Невірний одноразовий код.')
         return False

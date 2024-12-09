@@ -1,4 +1,6 @@
+from pathlib import Path
 import pyotp
+import qrcode
 
 from src.modules.mfa.dto import Code
 
@@ -6,11 +8,28 @@ from src.modules.mfa.dto import Code
 class MFAService:
     def __init__(
         self,
-        issuer: str,
+        issuer: str = 'KERELKO: Advanced Auth Service',
         interval: int = 30,
     ) -> None:
         self.issuer = issuer
         self.interval = interval
+
+    def generate_otp_uri(
+        self,
+        mfa_key: str,
+        name: str,
+        filepath: Path | None = None,
+    ) -> str:
+        """Generate and return OTP uri for the secret key.
+        * Can be saved to file as `qrcode` if `filepath` provided
+        """
+        totp = self.__totp_factory(mfa_key)
+        otp_uri = totp.provisioning_uri(name=name, issuer_name=self.issuer)
+        if filepath:
+            with open(filepath, '+wb') as file:
+                qr = qrcode.make(otp_uri)
+                qr.save(file)
+        return otp_uri
 
     def generate_secret(self) -> str:
         secret = pyotp.random_base32()
