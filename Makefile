@@ -19,6 +19,10 @@ migrate:
 	${EXEC} ${APP} alembic upgrade head
 
 
+.PHONY: auto-tests
+auto-tests:
+	${EXEC} ${APP} pytest tests/ --ignore tests/usecases/interactive
+
 .PHONY: tests
 tests:
 	${EXEC} ${APP} pytest tests

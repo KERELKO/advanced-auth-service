@@ -23,6 +23,8 @@ class AuthenticationService:
     @singledispatchmethod
     async def login(self, dto) -> tuple[Token, Token]:  # type: ignore
         """
+        Verifies user data and return a tuple containing access and refresh tokens.
+
         Generic login method::
 
             login(self, dto: UserDTO) -> tuple[Token, Token]
@@ -31,9 +33,6 @@ class AuthenticationService:
 
     @login.register
     async def _(self, dto: LoginUserDTO) -> tuple[Token, Token]:
-        """
-        Verifies user data and return a tuple containing access and refresh tokens.
-        """
         user = await self.repo.get_by_username(dto.username)
 
         if user is None:
