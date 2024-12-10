@@ -4,7 +4,7 @@
 init_db_tables() {
     echo "Initializing database tables..."
     python3 -c "
-from src.core.storage.orm.db import Database
+from src.core.storages.db import Database
 from src.core.di import container
 db = container.resolve(Database)
 db.init()

@@ -4,12 +4,12 @@ import punq
 
 from src.core import config
 from src.core.config import Config
-from src.core.storage.repositories.base import IPermissionRepository, IUserRepository
-from src.core.storage.repositories.sqlalchemy import (
+from src.core.storages.repositories.base import IPermissionRepository, IUserRepository
+from src.core.storages.repositories.sqlalchemy import (
     SQLAlchemyPermissionRepository,
     SQLAlchemyUserRepository,
 )
-from src.core.storage.orm.db import Database
+from src.core.storages.db import Database
 from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
 from src.modules.mfa.service import MFAService

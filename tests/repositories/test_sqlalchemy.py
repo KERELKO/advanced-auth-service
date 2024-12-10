@@ -6,11 +6,11 @@ from tests import _container as container, faker
 from src.core.dto.permissions import AddPermissionDTO
 from src.core.dto.users import AddUserDTO, UpdateUserDTO
 from src.core.exceptions import ObjectDoesNotExist
-from src.core.storage.repositories.base import (
+from src.core.storages.repositories.base import (
     IPermissionRepository,
     IUserRepository,
 )
-from src.core.storage.repositories.sqlalchemy import (
+from src.core.storages.repositories.sqlalchemy import (
     SQLAlchemyPermissionRepository,
     SQLAlchemyUserRepository,
 )

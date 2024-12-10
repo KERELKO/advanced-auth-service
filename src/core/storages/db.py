@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 from src.core.config import Config
 from src.core.exceptions import ApplicationException
 
-from .models.common import Base
+from .orm.models.base import Base
 
 
 class Database:

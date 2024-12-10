@@ -6,7 +6,7 @@ from src.core.dto.users import (
     UpdateUserDTO,
     UserDTO,
 )
-from src.core.storage.repositories.base import (
+from src.core.storages.repositories.base import (
     IPermissionRepository,
     IUserRepository,
 )

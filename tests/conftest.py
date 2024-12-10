@@ -19,9 +19,9 @@ from src.core.dto.users import (
     AddUserDTO,
     UserDTO,
 )
-from src.core.storage.orm.db import Database
-from src.core.storage.repositories.base import IUserRepository
-from src.core.storage.repositories.sqlalchemy import SQLAlchemyUserRepository
+from src.core.storages.db import Database
+from src.core.storages.repositories.base import IUserRepository
+from src.core.storages.repositories.sqlalchemy import SQLAlchemyUserRepository
 
 
 @pytest.fixture(scope="session")

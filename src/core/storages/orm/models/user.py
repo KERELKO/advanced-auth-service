@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.core.dto.permissions import PermissionDTO
 from src.core.utils import to_dto
 
-from .common import Base
+from .base import Base
 from .permissions import PermissionORM, permission_user_table
 
 

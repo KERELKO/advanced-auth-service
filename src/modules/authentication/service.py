@@ -8,7 +8,7 @@ from src.core.config import Config
 from src.core.dto.tokens import Token, TokenPayload
 from src.core.dto.users import AddUserDTO, UserDTO
 from src.core.exceptions import InvalidTokenException, ObjectDoesNotExist
-from src.core.storage.repositories.base import IUserRepository
+from src.core.storages.repositories.base import IUserRepository
 from src.modules.authentication.exceptions import IncorrectPasswordException, TokenExpiredException
 
 from .dto import LoginUserDTO, RegisterUserDTO

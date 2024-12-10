@@ -2,8 +2,6 @@ from pathlib import Path
 import pyotp
 import qrcode
 
-from src.modules.mfa.dto import Code
-
 
 class MFAService:
     def __init__(
@@ -35,8 +33,8 @@ class MFAService:
         secret = pyotp.random_base32()
         return secret
 
-    def generate_one_time_password(self, mfa_key: str) -> Code:
-        return Code(value=self.__totp_factory(mfa_key).now(), ttl=self.interval)
+    def generate_one_time_password(self, mfa_key: str) -> str:
+        return self.__totp_factory(mfa_key).now()
 
     def verify_mfa_code(self, mfa_key: str, code: str) -> bool:
         totp = self.__totp_factory(mfa_key)

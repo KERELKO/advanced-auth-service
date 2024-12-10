@@ -22,6 +22,9 @@ class Config:
     postgres_password: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
     postgres_db: str = os.getenv('POSTGRES_DB', 'postgres')
 
+    redis_host: str = os.getenv('REDIS_HOST', 'rediska')
+    redis_port: int = int(os.getenv('REDIS_PORT', 6379))
+
     smtp_port: int = int(os.getenv('SMTP_PORT', 587))
     smtp_server: str = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
     email_address: str = os.getenv('APP_EMAIL_ADDRESS', 'NOT SUPPORTED')
@@ -41,6 +44,10 @@ class Config:
         host_port = f'{self.postgres_host}:{self.postgres_port}'
         connection_string = f'{self.postgres_dialect}://{user_pwd}@{host_port}/{self.postgres_db}'
         return connection_string
+
+    @property
+    def redis_url(self) -> str:
+        return f'redis://{self.redis_host}:{self.redis_port}'
 
     def __post_init__(self) -> None:
         for field_name in self.__slots__:

@@ -11,13 +11,24 @@ services:
       - .env
     depends_on:
       - db
+      - memory
+
+  memory:
+    container_name: rediska
+    image: redis:7.4.1
+    volumes:
+      - ./data/redis/:/var/lib/redis
+    env_file:
+      - .env
+    ports:
+      - 6379:6379
 
   db:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:17.2
     volumes:
       - ./data/postgres/:/var/lib/postgres
     ports:
-      - '5432:5432'
+      - 5432:5432
     env_file:
       .env
