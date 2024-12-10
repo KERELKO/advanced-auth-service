@@ -1,9 +1,11 @@
+# fmt: off
 from dataclasses import dataclass
 
 from src.core.exceptions import ApplicationException
 
 
-class MFAException(ApplicationException): ...
+class MFAException(ApplicationException):
+    ...
 
 
 @dataclass(eq=False, repr=False)

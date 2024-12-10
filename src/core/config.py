@@ -22,6 +22,11 @@ class Config:
     postgres_password: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
     postgres_db: str = os.getenv('POSTGRES_DB', 'postgres')
 
+    smtp_port: int = int(os.getenv('SMTP_PORT', 587))
+    smtp_server: str = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+    email_address: str = os.getenv('APP_EMAIL_ADDRESS', 'NOT SUPPORTED')
+    email_password: str = os.getenv('APP_EMAIL_PASSWORD', 'NOT SUPPORTED')
+
     algorithms: tuple[str] = ('HS256',)
     refresh_token_expire_days: int = 7
     access_token_expire_minutes: int = 60
@@ -36,6 +41,11 @@ class Config:
         host_port = f'{self.postgres_host}:{self.postgres_port}'
         connection_string = f'{self.postgres_dialect}://{user_pwd}@{host_port}/{self.postgres_db}'
         return connection_string
+
+    def __post_init__(self) -> None:
+        for field_name in self.__slots__:
+            if not getattr(self, field_name, None):
+                raise TypeError(f'Empty value for {field_name}')
 
 
 config = Config()

@@ -1,3 +1,4 @@
+import typing as t
 from dataclasses import dataclass
 
 
@@ -5,3 +6,9 @@ from dataclasses import dataclass
 class Code:
     value: str
     ttl: int
+
+
+@dataclass
+class MFARequired:
+    user_id: str
+    method: t.Literal['otp', 'sms'] = 'otp'
