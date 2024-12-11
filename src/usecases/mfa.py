@@ -1,12 +1,13 @@
 from dataclasses import dataclass
+import datetime
 
 from src.core.dto.tokens import Token
 from src.core.dto.users import UpdateUserDTO, UserDTO
 from src.core.services.notifications import EmailNotificationService
-from src.core.storages.repositories.base import IUserRepository
+from src.core.storages.repositories.base import AbstractCodeRepository, IUserRepository
 from src.modules.authentication import AuthenticationService
-from src.modules.mfa import MFAService
-from src.modules.mfa.dto import MFACode, UpdateUserMFA
+from src.modules.mfa.service import MFAService
+from src.modules.mfa.dto import AddMFACode, MFACode, UpdateUserMFA
 from src.modules.mfa.exceptions import InvalidCodeException, MFAException
 
 from . import UseCase
@@ -37,12 +38,12 @@ class SetupUserMFA(UseCase[UpdateUserMFA, UserDTO]):
 
 @dataclass(eq=False, repr=False, slots=True)
 class SendMFACode(UseCase[UserDTO, MFACode]):
-    authentication_service: AuthenticationService
-    user_repository: IUserRepository
+    code_repository: AbstractCodeRepository
     notification_service: EmailNotificationService
     mfa_service: MFAService
 
     async def __call__(self, dto: UserDTO) -> MFACode:
+        # TODO
         # Better to separate notifications services
         # to handle sending codes by phone number or email, etc.
         if dto.mfa_type != 'code':
@@ -57,6 +58,13 @@ class SendMFACode(UseCase[UserDTO, MFACode]):
             raise MFAException('User enabled MFA, but setup is incorrect: "email" is not provided')
 
         code = self.mfa_service.generate_one_time_password(dto.mfa_secret)
+        code_expires_at = int(
+            (datetime.datetime.now() + datetime.timedelta(seconds=15 * 60)).timestamp()
+        )
+
+        await self.code_repository.set(
+            AddMFACode(dto.id, expires_at=code_expires_at, code=code), ttl=15 * 60
+        )
 
         message = f'Your verification code: {code}'
 

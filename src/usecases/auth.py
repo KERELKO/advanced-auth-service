@@ -9,7 +9,7 @@ from src.modules.authentication.dto import (
     RegisterUserDTO as _RegisterUserDTO,
 )
 from src.modules.authorization import AuthorizationService
-from src.modules.mfa import MFAService
+from src.modules.mfa.service import MFAService
 from src.modules.mfa.dto import MFARequired
 from src.modules.mfa.exceptions import InvalidSecretKeyException
 

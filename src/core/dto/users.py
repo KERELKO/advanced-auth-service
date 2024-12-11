@@ -39,6 +39,7 @@ class AddUserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
+    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
 
     oauth_provider: str | None = None
     oauth_provider_id: str | None = None

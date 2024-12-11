@@ -24,6 +24,7 @@ from src.usecases.auth import (
     LoginUser,
     RegisterUser,
 )
+from src.usecases.mfa import LoginUserMFA, SendMFACode, SetupUserMFA
 
 
 T = t.TypeVar('T')
@@ -65,6 +66,10 @@ class Container:
 
         container.register(RegisterUser)
         container.register(LoginUser)
+
+        container.register(SetupUserMFA)
+        container.register(LoginUserMFA)
+        container.register(SendMFACode)
 
         return container
 
