@@ -19,10 +19,13 @@ class UserORM(Base):
     username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True, index=True)
     email: Mapped[str | None] = mapped_column(String(40), nullable=True)
     hashed_password: Mapped[str | None] = mapped_column(String(200), nullable=True)
+
+    mfa_type: Mapped[str] = mapped_column(String(10), nullable=True)
+    mfa_secret: Mapped[str] = mapped_column(String(), nullable=True)
     mfa_enabled: Mapped[bool] = mapped_column(
         Boolean(), default=False, nullable=False, server_default=text('false')
     )
-    mfa_secret: Mapped[str] = mapped_column(String(), nullable=True)
+
     oauth_provider: Mapped[str | None] = mapped_column(String(30), nullable=True)
     oauth_provider_id: Mapped[str | None] = mapped_column(String(), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
@@ -62,6 +65,7 @@ class UserORM(Base):
             'hashed_password': self.hashed_password,
             'mfa_enabled': self.mfa_enabled,
             'mfa_secret': self.mfa_secret,
+            'mfa_type': self.mfa_type,
             'oauth_provider': self.oauth_provider,
             'oauth_provider_id': self.oauth_provider_id,
             'permissions': [

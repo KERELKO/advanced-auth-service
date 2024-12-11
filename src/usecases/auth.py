@@ -10,7 +10,8 @@ from src.modules.authentication.dto import (
 )
 from src.modules.authorization import AuthorizationService
 from src.modules.mfa import MFAService
-from src.modules.mfa.exceptions import InvalidCodeException, InvalidSecretKeyException
+from src.modules.mfa.dto import MFARequired
+from src.modules.mfa.exceptions import InvalidSecretKeyException
 
 from . import UseCase
 
@@ -33,17 +34,14 @@ class RegisterUser(UseCase[_RegisterUserDTO, UserDTO]):
 
 
 @dataclass(eq=False, repr=False, slots=True)
-class LoginUser(UseCase[_LoginUserDTO, tuple[Token, Token] | UserDTO]):
+class LoginUser(UseCase[_LoginUserDTO, tuple[Token, Token] | MFARequired]):
     authorization_service: AuthorizationService
     authentication_service: AuthenticationService
     mfa_service: MFAService
 
-    async def __call__(self, dto: _LoginUserDTO) -> tuple[Token, Token] | UserDTO:
+    async def __call__(self, dto: _LoginUserDTO) -> tuple[Token, Token] | MFARequired:
         """Return `access` and `refresh` tokens if user logged in
-        otherwise return `UserDTO` instance indicating that `MFA required`
-
-        * if `MFA required` use `verify_mfa_code` method to verify code
-        from the user's authenticator (e.g Google Authenticator)
+        otherwise return `MFARequired` instance indicating that `MFA required`
         """
         user = await self.authentication_service.repo.get_by_username(dto.username)
 
@@ -54,15 +52,11 @@ class LoginUser(UseCase[_LoginUserDTO, tuple[Token, Token] | UserDTO]):
         if user.mfa_enabled and not user.mfa_secret:
             raise InvalidSecretKeyException(user.mfa_secret)
         elif user.mfa_enabled and user.mfa_secret:
-            return user
+            if not user.mfa_type:
+                raise ApplicationException(
+                    'User enabled MFA, but setup is incorrect: "mfa_type" is not provided'
+                )
+            return MFARequired(user=user, mfa_type=user.mfa_type)
 
         tokens = await self.authentication_service.login(user)
         return tokens
-
-    async def verify_mfa_code(self, user: UserDTO, code: str) -> tuple[Token, Token]:
-        if not user.mfa_secret:
-            raise InvalidSecretKeyException(user.mfa_secret)
-        if self.mfa_service.verify_mfa_code(user.mfa_secret, code) is False:
-            raise InvalidCodeException(code)
-
-        return await self.authentication_service.login(user)

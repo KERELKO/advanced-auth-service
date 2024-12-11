@@ -1,13 +1,7 @@
 import abc
 import typing as t
-from dataclasses import Field as _Field
 
-
-class __DataclassInstance(t.Protocol):
-    __dataclass_fields__: t.ClassVar[dict[str, _Field[t.Any]]]
-
-
-IT = t.TypeVar('IT', bound=__DataclassInstance)
+IT = t.TypeVar('IT', bound=t.Any)
 OT = t.TypeVar('OT', bound=t.Any)
 
 

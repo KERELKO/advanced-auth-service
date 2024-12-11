@@ -1,10 +1,13 @@
 from loguru import logger
+from tests import _container as container
+from tests.conftest import (
+    disposable_data,
+    registered_user,
+)
+
 from src.core.dto.permissions import AddPermissionDTO
 from src.core.dto.users import AddUserDTO
-from tests import _container as container
-
 from src.modules.authorization.service import AuthorizationService
-from tests.conftest import disposable_data, registered_user
 
 
 async def test_authorization_service(

@@ -5,26 +5,20 @@ import aiosmtplib
 from aiosmtplib.errors import SMTPException
 from loguru import logger
 
+from src.core.config import Config
+
 from .interfaces import AbstractNotificationService
-
-
-class DummyNotificationService(AbstractNotificationService):
-    async def send(self, message: str, subject: str, to: str) -> None:
-        print(message, subject, to)
 
 
 class EmailNotificationService(AbstractNotificationService):
     def __init__(
         self,
-        smtp_server: str,
-        smtp_port: int,
-        email_address: str,
-        email_password: str,
+        config: Config,
     ) -> None:
-        self.smtp_server = smtp_server
-        self.smtp_port = smtp_port
-        self.email_address = email_address
-        self.__email_password = email_password
+        self.smtp_server = config.smtp_server
+        self.smtp_port = config.smtp_port
+        self.email_address = config.email_address
+        self.__email_password = config.email_password
 
     async def send(self, message: str, subject: str, to: str) -> None:
         try:
@@ -43,6 +37,6 @@ class EmailNotificationService(AbstractNotificationService):
                 password=self.__email_password,
             )
 
-            logger.info(f'Sended email to {subject}')
+            logger.info(f'Sent email: subject={subject}, to={to}')
         except SMTPException as e:
-            logger.error(e)
+            logger.error(f'Failed to send email: {e}')

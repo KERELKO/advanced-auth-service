@@ -2,15 +2,28 @@ from pathlib import Path
 import pyotp
 import qrcode
 
+from src.core.exceptions import ObjectDoesNotExist
+from src.core.storages.repositories.base import AbstractCodeRepository
+from src.modules.mfa.exceptions import CodeExpiredException
+
 
 class MFAService:
     def __init__(
         self,
+        code_repository: AbstractCodeRepository,
         issuer: str = 'KERELKO: Advanced Auth Service',
         interval: int = 30,
     ) -> None:
         self.issuer = issuer
         self.interval = interval
+        self.code_repository = code_repository
+
+    async def check_storage_code(self, user_id: int, code: str) -> bool:
+        try:
+            dto = await self.code_repository.get(user_id)
+        except ObjectDoesNotExist as e:
+            raise CodeExpiredException(e)
+        return dto.code == code
 
     def generate_otp_uri(
         self,

@@ -8,6 +8,10 @@ class MFAException(ApplicationException):
     ...
 
 
+class CodeExpiredException(MFAException):
+    ...
+
+
 @dataclass(eq=False, repr=False)
 class InvalidCodeException(MFAException):
     code: str

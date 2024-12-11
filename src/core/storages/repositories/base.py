@@ -1,7 +1,7 @@
 # fmt: off
 import abc
 from src.core.dto import users, permissions
-from src.modules.mfa.dto import MFACode
+from src.modules.mfa.dto import AddMFACode
 
 
 class IUserRepository:
@@ -37,9 +37,9 @@ class IPermissionRepository:
 
 class AbstractCodeRepository(abc.ABC):
     @abc.abstractmethod
-    async def get(self, user_id: int) -> MFACode:
+    async def get(self, user_id: int) -> AddMFACode:
         ...
 
     @abc.abstractmethod
-    async def set(self, data: MFACode):
+    async def set(self, dto: AddMFACode, ttl: int):
         ...

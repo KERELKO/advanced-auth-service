@@ -20,7 +20,7 @@ pyotp = "^2.9.0"
 qrcode = "^8.0"
 pillow = "^11.0.0"
 aiosmtplib = "^3.0.2"
-aioredis = "^2.0.1"
+redis = "^5.2.1"
 
 
 [tool.poetry.group.dev.dependencies]

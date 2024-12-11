@@ -4,16 +4,26 @@ import punq
 
 from src.core import config
 from src.core.config import Config
-from src.core.storages.repositories.base import IPermissionRepository, IUserRepository
+from src.core.services.interfaces import AbstractNotificationService
+from src.core.services.notifications import EmailNotificationService
+from src.core.storages.db import Database
+from src.core.storages.repositories.base import (
+    AbstractCodeRepository,
+    IPermissionRepository,
+    IUserRepository,
+)
+from src.core.storages.repositories.redis import RedisCodeRepository
 from src.core.storages.repositories.sqlalchemy import (
     SQLAlchemyPermissionRepository,
     SQLAlchemyUserRepository,
 )
-from src.core.storages.db import Database
 from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
 from src.modules.mfa.service import MFAService
-from src.usecases.auth import LoginUser, RegisterUser
+from src.usecases.auth import (
+    LoginUser,
+    RegisterUser,
+)
 
 
 T = t.TypeVar('T')
@@ -36,10 +46,22 @@ class Container:
             SQLAlchemyPermissionRepository,
             scope=punq.Scope.singleton,
         )
+        code_repo = RedisCodeRepository(config)
+        container.register(AbstractCodeRepository, instance=code_repo, scope=punq.Scope.singleton)
 
+        # If you use `EmailNotificationService` check config.email_address, config.email_password
+        # In Google Gmail you need to turn on `2-Step Verification`
+        # then by the url generate password and paste it to .env APP_EMAIL_PASSWORD
+        # https://security.google.com/settings/security/apppasswords
+        container.register(EmailNotificationService, scope=punq.Scope.singleton)
+        container.register(
+            AbstractNotificationService,
+            EmailNotificationService,
+            scope=punq.Scope.singleton,
+        )
         container.register(AuthenticationService, scope=punq.Scope.singleton)
         container.register(AuthorizationService, scope=punq.Scope.singleton)
-        container.register(MFAService, instance=MFAService(), scope=punq.Scope.singleton)
+        container.register(MFAService, instance=MFAService(code_repo), scope=punq.Scope.singleton)
 
         container.register(RegisterUser)
         container.register(LoginUser)

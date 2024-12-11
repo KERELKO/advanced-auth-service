@@ -1,3 +1,4 @@
+import typing as t
 import datetime
 from dataclasses import (
     dataclass,
@@ -17,6 +18,7 @@ class UserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
+    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
 
     oauth_provider: str | None = None
     oauth_provider_id: str | None = None
@@ -42,13 +44,6 @@ class AddUserDTO:
     oauth_provider_id: str | None = None
 
 
-@dataclass(eq=False, repr=False, slots=True)
-class UserOutDTO:
-    id: int
-    username: str
-    email: str | None
-
-
 @dataclass(eq=False, slots=True)
 class UpdateUserDTO:
     username: str | None = None
@@ -59,6 +54,7 @@ class UpdateUserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
+    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
 
     oauth_provider: str | None = None
     oauth_provider_id: str | None = None

@@ -26,7 +26,7 @@ class Config:
     redis_port: int = int(os.getenv('REDIS_PORT', 6379))
 
     smtp_port: int = int(os.getenv('SMTP_PORT', 587))
-    smtp_server: str = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+    smtp_server: str = os.getenv('SMTP_SERVER', 'localhost')
     email_address: str = os.getenv('APP_EMAIL_ADDRESS', 'NOT SUPPORTED')
     email_password: str = os.getenv('APP_EMAIL_PASSWORD', 'NOT SUPPORTED')
 

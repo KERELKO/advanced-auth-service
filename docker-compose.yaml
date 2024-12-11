@@ -17,11 +17,23 @@ services:
     container_name: rediska
     image: redis:7.4.1
     volumes:
-      - ./data/redis/:/var/lib/redis
+      - ./data/redis/:/redis/data
     env_file:
       - .env
     ports:
       - 6379:6379
+
+  memory-ui:
+    container_name: memory-ui
+    image: redis/redisinsight:2.62
+    env_file:
+      - .env
+    volumes:
+      - ./data/ri/:/ri/data
+    ports:
+      - 5540:5540
+    depends_on:
+      - memory
 
   db:
     container_name: postgres
