@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@dataclass(eq=False, repr=False, frozen=True, slots=True)
+@dataclass(eq=False, repr=False, frozen=True)
 class AuthConfig:
     algorithms: tuple[str] = ('HS256',)
     refresh_token_expire_days: int = 7

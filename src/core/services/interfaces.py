@@ -5,7 +5,6 @@ from abc import (
     abstractmethod,
 )
 
-from src.core.dto.tokens import Token
 from src.core.dto.users import ExternalUser
 
 
@@ -26,12 +25,4 @@ class AbstractNotificationService(ABC):
 class AbstractOAuthService(ABC, t.Generic[UT]):
     @abstractmethod
     async def get_user(self, code: str) -> UT:
-        ...
-
-    @abstractmethod
-    async def authenticate(self, code: str) -> tuple[Token, Token]:
-        ...
-
-    @abstractmethod
-    async def register(self, code: str) -> tuple[Token, Token]:
         ...

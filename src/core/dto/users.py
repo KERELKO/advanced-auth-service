@@ -62,6 +62,7 @@ class UpdateUserDTO:
     oauth_provider_id: str | None = None
 
 
+@dataclass
 class ExternalUser:
     id: str
 

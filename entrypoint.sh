@@ -15,4 +15,4 @@ db.init()
 # Run the init_db_tables function
 init_db_tables
 
-python3 -m http.server 8000
+uvicorn main:app --reload --port 8000 --host 0.0.0.0

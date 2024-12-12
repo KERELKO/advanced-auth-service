@@ -39,5 +39,5 @@ class GoogleUser(ExternalUser):
 
 @dataclass
 class OAuthCode:
-    provider: OAuthProvider
     code: str
+    provider: OAuthProvider

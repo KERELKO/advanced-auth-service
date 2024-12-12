@@ -2,7 +2,10 @@ import typing as t
 
 import punq
 
-from src.core.config import Config, config
+from src.core.config import (
+    Config,
+    config,
+)
 from src.core.services.interfaces import AbstractNotificationService
 from src.core.services.notifications import EmailNotificationService
 from src.core.storages.db import Database
@@ -19,11 +22,17 @@ from src.core.storages.repositories.sqlalchemy import (
 from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
 from src.modules.mfa.service import MFAService
+from src.modules.oauth.service import GitHubOAuthService, GoogleOAuthService
 from src.usecases.auth import (
     LoginUser,
     RegisterUser,
 )
-from src.usecases.mfa import LoginUserMFA, SendMFACode, SetupUserMFA
+from src.usecases.mfa import (
+    LoginUserMFA,
+    SendMFACode,
+    SetupUserMFA,
+)
+from src.usecases.oauth import OAuthLogin
 
 
 T = t.TypeVar('T')
@@ -62,12 +71,15 @@ class Container:
         container.register(AuthenticationService, scope=punq.Scope.singleton)
         container.register(AuthorizationService, scope=punq.Scope.singleton)
         container.register(MFAService, instance=MFAService(code_repo), scope=punq.Scope.singleton)
+        container.register(GoogleOAuthService)
+        container.register(GitHubOAuthService)
 
         container.register(RegisterUser)
         container.register(LoginUser)
         container.register(SetupUserMFA)
         container.register(LoginUserMFA)
         container.register(SendMFACode)
+        container.register(OAuthLogin)
 
         return container
 

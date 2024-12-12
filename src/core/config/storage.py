@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 
 
-@dataclass(eq=False, repr=False, frozen=True, slots=True)
+@dataclass(eq=False, repr=False, frozen=True)
 class StorageConfig:
     postgres_dialect: str = 'postgresql+asyncpg'
 
