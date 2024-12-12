@@ -5,6 +5,7 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
+from src.core.constants import OAuthProvider
 from src.core.dto.permissions import (
     AddPermissionDTO,
     PermissionDTO,
@@ -72,6 +73,24 @@ class SQLAlchemyUserRepository:
             await session.commit()
             logger.info(f'Added user: id={new_user.id}')
             return to_dto(UserDTO, new_user.to_dict())
+
+    async def get_by_oauth_provider(
+        self,
+        oauth_provider_id: str,
+        provider: OAuthProvider,
+    ) -> UserDTO:
+        async with self.db.session_factory() as session:
+            stmt = (
+                self.__construct_user_select()
+                .where(
+                    UserORM.oauth_provider == provider,
+                )
+                .where(UserORM.oauth_provider_id == oauth_provider_id)
+            )
+            user = (await session.execute(stmt)).unique().scalar_one_or_none()
+            if not user:
+                raise ObjectDoesNotExist(id=oauth_provider_id)
+            return to_dto(UserDTO, user.to_dict())
 
     async def get_by_username(self, username: str) -> UserDTO:
         stmt = self.__construct_user_select().where(UserORM.username == username)

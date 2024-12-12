@@ -1,5 +1,6 @@
 # fmt: off
 import abc
+from src.core.constants import OAuthProvider
 from src.core.dto import users, permissions
 from src.modules.mfa.dto import AddMFACode
 
@@ -18,6 +19,11 @@ class IUserRepository:
         ...
 
     async def update(self, user_id: int, dto: users.UpdateUserDTO) -> users.UserDTO:
+        ...
+
+    async def get_by_oauth_provider(
+        self, oauth_provider_id: str, provider: OAuthProvider,
+    ) -> users.UserDTO:
         ...
 
 

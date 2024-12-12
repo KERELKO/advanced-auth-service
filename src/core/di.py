@@ -2,8 +2,7 @@ import typing as t
 
 import punq
 
-from src.core import config
-from src.core.config import Config
+from src.core.config import Config, config
 from src.core.services.interfaces import AbstractNotificationService
 from src.core.services.notifications import EmailNotificationService
 from src.core.storages.db import Database
@@ -66,7 +65,6 @@ class Container:
 
         container.register(RegisterUser)
         container.register(LoginUser)
-
         container.register(SetupUserMFA)
         container.register(LoginUserMFA)
         container.register(SendMFACode)

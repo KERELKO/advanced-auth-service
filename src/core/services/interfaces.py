@@ -1,3 +1,4 @@
+# fmt: off
 import typing as t
 from abc import (
     ABC,
@@ -18,15 +19,19 @@ class AbstractNotificationService(ABC):
         message: str,
         subject: str,
         to: str,
-    ) -> None: ...
+    ) -> None:
+        ...
 
 
 class AbstractOAuthService(ABC, t.Generic[UT]):
     @abstractmethod
-    async def get_user(self, code: str) -> UT: ...
+    async def get_user(self, code: str) -> UT:
+        ...
 
     @abstractmethod
-    async def authenticate(self, code: str) -> tuple[Token, Token]: ...
+    async def authenticate(self, code: str) -> tuple[Token, Token]:
+        ...
 
     @abstractmethod
-    async def register(self, code: str) -> tuple[Token, Token]: ...
+    async def register(self, code: str) -> tuple[Token, Token]:
+        ...

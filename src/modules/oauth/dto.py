@@ -1,6 +1,13 @@
-from src.core.dto.users import AddUserDTO, ExternalUser
+from dataclasses import dataclass
+
+from src.core.constants import OAuthProvider
+from src.core.dto.users import (
+    AddUserDTO,
+    ExternalUser,
+)
 
 
+@dataclass
 class GitHubUser(ExternalUser):
     login: str
     name: str
@@ -15,6 +22,7 @@ class GitHubUser(ExternalUser):
         )
 
 
+@dataclass
 class GoogleUser(ExternalUser):
     email: str
     name: str
@@ -27,3 +35,9 @@ class GoogleUser(ExternalUser):
             oauth_provider_id=self.id,
             oauth_provider='google',
         )
+
+
+@dataclass
+class OAuthCode:
+    provider: OAuthProvider
+    code: str
