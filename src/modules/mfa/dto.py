@@ -1,6 +1,6 @@
-import typing as t
 from dataclasses import dataclass
 
+from src.core.constants import MFAType
 from src.core.dto.users import UserDTO
 
 
@@ -14,14 +14,14 @@ class AddMFACode:
 @dataclass(slots=True, eq=False)
 class MFARequired:
     user: UserDTO
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] = 'otp'
+    mfa_type: MFAType = 'otp'
 
 
 @dataclass(slots=True, eq=False)
 class MFACode:
     user_id: int
     code: str
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] = 'otp'
+    mfa_type: MFAType = 'otp'
 
 
 @dataclass(slots=True, eq=False)
@@ -29,4 +29,4 @@ class UpdateUserMFA:
     user_id: int
     mfa_enabled: bool
     mfa_secret: str | None = None
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] = 'otp'
+    mfa_type: MFAType = 'otp'

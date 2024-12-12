@@ -88,7 +88,6 @@ class LoginUserMFA(UseCase[MFACode, tuple[Token, Token]]):
         if user.mfa_type == 'code':
             if not await self.mfa_service.check_storage_code(user.id, dto.code):
                 raise InvalidCodeException(dto.code)
-
         elif user.mfa_type == 'otp':
             if not user.mfa_secret:
                 raise MFAException(

@@ -1,10 +1,11 @@
-import typing as t
+from abc import abstractmethod
 import datetime
 from dataclasses import (
     dataclass,
     field,
 )
 
+from src.core.constants import OAuthProvider, MFAType
 from src.core.dto.permissions import PermissionDTO
 
 
@@ -18,9 +19,9 @@ class UserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
+    mfa_type: MFAType | None = None
 
-    oauth_provider: str | None = None
+    oauth_provider: OAuthProvider | None = None
     oauth_provider_id: str | None = None
 
     updated_at: datetime.datetime = field(default_factory=datetime.datetime.now)
@@ -39,9 +40,9 @@ class AddUserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
+    mfa_type: MFAType | None = None
 
-    oauth_provider: str | None = None
+    oauth_provider: OAuthProvider | None = None
     oauth_provider_id: str | None = None
 
 
@@ -55,7 +56,14 @@ class UpdateUserDTO:
 
     mfa_enabled: bool = False
     mfa_secret: str | None = None
-    mfa_type: t.Literal['sms', 'otp', 'all', 'code'] | None = None
+    mfa_type: MFAType | None = None
 
-    oauth_provider: str | None = None
+    oauth_provider: OAuthProvider | None = None
     oauth_provider_id: str | None = None
+
+
+class ExternalUser:
+    id: str
+
+    @abstractmethod
+    def as_add_user_dto(self) -> AddUserDTO: ...

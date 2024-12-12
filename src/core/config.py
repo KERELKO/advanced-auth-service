@@ -30,6 +30,9 @@ class Config:
     email_address: str = os.getenv('APP_EMAIL_ADDRESS', 'NOT SUPPORTED')
     email_password: str = os.getenv('APP_EMAIL_PASSWORD', 'NOT SUPPORTED')
 
+    client_id: str = os.getenv('CLIENT_ID', '')
+    client_secret: str = os.getenv('CLIENT_SECRET', '')
+
     algorithms: tuple[str] = ('HS256',)
     refresh_token_expire_days: int = 7
     access_token_expire_minutes: int = 60
