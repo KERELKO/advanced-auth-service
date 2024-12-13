@@ -75,8 +75,6 @@ class GitHubOAuthService(AbstractOAuthService[GitHubUser]):
                 logger.error(msg)
                 raise OAuthException(msg)
 
-            logger.info(token_response.status_code)
-            logger.info(token_response.text)
             tokens = token_response.json()
             access_token = tokens.get('access_token')
 
@@ -91,6 +89,5 @@ class GitHubOAuthService(AbstractOAuthService[GitHubUser]):
                 raise OAuthException(msg)
 
         user_info = user_info_response.json()
-        logger.info(user_info)
         user_info['id'] = str(user_info['id'])
         return to_dto(GitHubUser, user_info)

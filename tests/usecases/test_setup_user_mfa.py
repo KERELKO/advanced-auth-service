@@ -1,8 +1,12 @@
 from loguru import logger
-from src.modules.mfa.dto import UpdateUserMFA
 from tests import _container as container
+from tests.conftest import (
+    disposable_data,
+    registered_user,
+)
+
+from src.modules.mfa.dto import UpdateUserMFA
 from src.usecases.mfa import SetupUserMFA
-from tests.conftest import disposable_data, registered_user
 
 
 async def test_can_enable_user_mfa(add_user_dto):

@@ -58,10 +58,6 @@ class Container:
         code_repo = RedisCodeRepository(config)
         container.register(AbstractCodeRepository, instance=code_repo, scope=punq.Scope.singleton)
 
-        # If you use `EmailNotificationService` check config.email_address, config.email_password
-        # In Google Gmail you need to turn on `2-Step Verification`
-        # then by the url generate password and paste it to .env APP_EMAIL_PASSWORD
-        # https://security.google.com/settings/security/apppasswords
         container.register(EmailNotificationService, scope=punq.Scope.singleton)
         container.register(
             AbstractNotificationService,

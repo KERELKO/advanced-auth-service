@@ -1,3 +1,4 @@
+import random
 import uuid
 import pytest
 from loguru import logger
@@ -54,7 +55,7 @@ async def test_can_update_user_in_user_repository(
                 hashed_password=str(uuid.uuid4()),
                 mfa_enabled=True,
                 mfa_secret=str(uuid.uuid4()),
-                oauth_provider=faker.user_name(),
+                oauth_provider=random.choice(['github', 'google']),
                 oauth_provider_id=str(uuid.uuid4()),
             )
             user_dto = await user_repo.update(user_id=user.id, dto=update_user_dto)

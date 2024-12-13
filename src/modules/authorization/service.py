@@ -32,10 +32,16 @@ class AuthorizationService:
         user = await self.user_repository.get(id=user_id) or not_found(id=user_id)
         user_permissions = {p.codename for p in user.permissions}
         if bool(user_permissions) and user_permissions <= permissions:
-            logger.info(f'Enough permission for the user: id={user_id}')
+            logger.info(
+                f'User with id={user_id} has sufficient permissions. '
+                f'Required: {permissions}, Provided: {user_permissions}'
+            )
             return True
         else:
-            logger.info(f'Lack of permissions for the user: id={user_id}')
+            logger.warning(
+                f'User with id={user_id} lacks sufficient permissions. '
+                f'Required: {permissions}, Provided: {user_permissions}'
+            )
             return False
 
     async def get_user_permissions(self, user_id: int) -> list[PermissionDTO]:
