@@ -1,3 +1,4 @@
+# fmt: off
 from dataclasses import asdict
 
 import sqlalchemy as sa
@@ -82,9 +83,7 @@ class SQLAlchemyUserRepository:
         async with self.db.session_factory() as session:
             stmt = (
                 self.__construct_user_select()
-                .where(
-                    UserORM.oauth_provider == provider,
-                )
+                .where(UserORM.oauth_provider == provider)
                 .where(UserORM.oauth_provider_id == oauth_provider_id)
             )
             user = (await session.execute(stmt)).unique().scalar_one_or_none()

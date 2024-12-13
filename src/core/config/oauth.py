@@ -16,3 +16,11 @@ class OAuthConfig:
     github_client_secret: str = os.getenv('GITHUB_CLIENT_SECRET', '')
 
     redirect_uri: str = os.getenv('OAUTH_REDIRECT_URI', '')
+
+    @property
+    def github_redirect_uri(self) -> str:
+        return self.redirect_uri + '/github'
+
+    @property
+    def google_redirect_uri(self) -> str:
+        return self.redirect_uri + '/google'

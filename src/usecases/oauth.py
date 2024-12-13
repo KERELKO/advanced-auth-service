@@ -2,11 +2,11 @@
 from dataclasses import dataclass
 
 from src.core.dto.tokens import Token
-from src.core.dto.users import (
-    ExternalUser,
-    UserDTO,
+from src.core.dto.users import ExternalUser
+from src.core.exceptions import (
+    ApplicationException,
+    ObjectDoesNotExist,
 )
-from src.core.exceptions import ApplicationException, ObjectDoesNotExist
 from src.core.services.interfaces import AbstractOAuthService
 from src.core.storages.repositories.base import IUserRepository
 from src.modules.authentication.service import AuthenticationService
@@ -49,19 +49,3 @@ class OAuthLogin(UseCase[OAuthCode, tuple[Token, Token]]):
             user = await self.user_repository.add(add_user_dto)
 
         return await self.authentication_service.login(user)
-
-
-@dataclass(eq=False, repr=False, slots=True)
-class OAuthRegisterUser(UseCase[OAuthCode, UserDTO]):
-    authorization_service: AuthorizationService
-    user_repository: IUserRepository
-
-    async def __call__(self, dto: OAuthCode) -> UserDTO:
-        service: AbstractOAuthService = _get_service_by_provider(dto.provider)
-
-        user: ExternalUser = await service.get_user(code=dto.code)
-        add_user_dto = user.as_add_user_dto()
-        add_user_dto.permissions = self.authorization_service.default_permission_set
-
-        registered_user = await self.user_repository.add(add_user_dto)
-        return registered_user

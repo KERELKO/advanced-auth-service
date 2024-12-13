@@ -18,7 +18,7 @@ class GitHubUser(ExternalUser):
             username=self.login,
             email=self.email,
             oauth_provider='github',
-            oauth_provider_id=self.id,
+            oauth_provider_id=str(self.id),
         )
 
 
