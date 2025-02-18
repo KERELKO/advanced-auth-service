@@ -6,7 +6,7 @@ from tests.conftest import (
 )
 
 from src.modules.mfa.dto import UpdateUserMFA
-from src.usecases.mfa import SetupUserMFA
+from src.usecases.mfa.setup import SetupUserMFA
 
 
 async def test_can_enable_user_mfa(add_user_dto):

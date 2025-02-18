@@ -17,11 +17,10 @@ from src.modules.authentication.dto import (
     RegisterUserDTO,
 )
 from src.modules.mfa.service import MFAService
-from src.usecases.mfa import LoginUserMFA
-from src.usecases.auth import (
-    LoginUser,
-    RegisterUser,
-)
+from src.usecases.mfa.login_user import LoginUserMFA
+from src.usecases.auth.login_user import LoginUser
+from src.usecases.auth.register_user import RegisterUser
+
 
 MESSAGE = """
 ###################################################################

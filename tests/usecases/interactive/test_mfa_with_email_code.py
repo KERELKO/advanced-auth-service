@@ -13,11 +13,11 @@ from src.modules.authentication.dto import (
 )
 from src.modules.mfa.dto import MFACode, MFARequired
 from src.modules.mfa.exceptions import InvalidCodeException
-from src.usecases.auth import (
-    LoginUser,
-    RegisterUser,
-)
-from src.usecases.mfa import LoginUserMFA, SendMFACode
+from src.usecases.auth.login_user import LoginUser
+from src.usecases.auth.register_user import RegisterUser
+
+from src.usecases.mfa.login_user import LoginUserMFA
+from src.usecases.mfa.send_code import SendMFACode
 
 
 MESSAGE = """

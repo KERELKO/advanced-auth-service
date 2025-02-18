@@ -23,16 +23,14 @@ from src.modules.authentication.service import AuthenticationService
 from src.modules.authorization.service import AuthorizationService
 from src.modules.mfa.service import MFAService
 from src.modules.oauth.service import GitHubOAuthService, GoogleOAuthService
-from src.usecases.auth import (
-    LoginUser,
-    RegisterUser,
-)
-from src.usecases.mfa import (
-    LoginUserMFA,
-    SendMFACode,
-    SetupUserMFA,
-)
-from src.usecases.oauth import OAuthLogin
+from src.usecases.auth.login_user import LoginUser
+from src.usecases.auth.register_user import RegisterUser
+
+from src.usecases.mfa.login_user import LoginUserMFA
+from src.usecases.mfa.send_code import SendMFACode
+from src.usecases.mfa.setup import SetupUserMFA
+
+from src.usecases.oauth.login_user import OAuthLogin
 
 
 T = t.TypeVar('T')
@@ -49,11 +47,10 @@ class Container:
         container.register(Config, instance=config, scope=punq.Scope.singleton)
         db = Database(config)
         container.register(Database, instance=db)
-        container.register(IUserRepository, SQLAlchemyUserRepository, scope=punq.Scope.singleton)
+        container.register(IUserRepository, lambda: SQLAlchemyUserRepository(db.session_factory()))
         container.register(
             IPermissionRepository,
-            SQLAlchemyPermissionRepository,
-            scope=punq.Scope.singleton,
+            lambda: SQLAlchemyPermissionRepository(db.session_factory()),
         )
         code_repo = RedisCodeRepository(config)
         container.register(AbstractCodeRepository, instance=code_repo, scope=punq.Scope.singleton)

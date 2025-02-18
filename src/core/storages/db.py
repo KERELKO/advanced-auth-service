@@ -28,7 +28,7 @@ class Database:
         self.clear_db = self.__clear_db
 
     async def __clear_db(self) -> None:
-        if self.config.env != 'dev':
+        if self.config.env == 'prod':
             raise ApplicationException('Cannot clear database in non DEV environment')
         async with self.engine.connect() as connection:
             await connection.execute(

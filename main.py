@@ -15,7 +15,7 @@ from src.core.constants import (
 )
 from src.core.di import container
 from src.modules.oauth.dto import OAuthCode
-from src.usecases.oauth import OAuthLogin
+from src.usecases.oauth.login_user import OAuthLogin
 
 
 app = FastAPI()

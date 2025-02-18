@@ -23,4 +23,4 @@ async def test_can_get_and_set_codes_in_redis_code_repository() -> None:
 
     assert code is not None
 
-    assert code.code is not None
+    assert code is not None

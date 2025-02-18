@@ -4,7 +4,7 @@ from tests.conftest import disposable_data
 
 from src.modules.authentication.dto import RegisterUserDTO
 from src.modules.authorization.service import AuthorizationService
-from src.usecases.auth import RegisterUser
+from src.usecases.auth.register_user import RegisterUser
 
 
 async def test_register_user_usecase(register_user_dto: RegisterUserDTO) -> None:

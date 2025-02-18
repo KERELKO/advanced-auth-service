@@ -43,7 +43,7 @@ class IPermissionRepository:
 
 class AbstractCodeRepository(abc.ABC):
     @abc.abstractmethod
-    async def get(self, user_id: int) -> AddMFACode:
+    async def get(self, user_id: int) -> str:
         ...
 
     @abc.abstractmethod

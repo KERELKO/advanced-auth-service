@@ -6,6 +6,7 @@ from typing import (
     Generator,
 )
 
+from loguru import logger
 import pytest
 from sqlalchemy import text
 from src.modules.authentication.dto import RegisterUserDTO
@@ -70,7 +71,7 @@ async def disposable_data() -> AsyncGenerator[None, None]:
 
 @asynccontextmanager
 async def registered_user(add_user_dto: AddUserDTO) -> AsyncGenerator[UserDTO, None]:
-    """Clear database after usage"""
+    """Allows to interact with disposable registered user"""
     db = container.resolve(Database)
     repo = container.resolve(IUserRepository)
     assert isinstance(repo, SQLAlchemyUserRepository)

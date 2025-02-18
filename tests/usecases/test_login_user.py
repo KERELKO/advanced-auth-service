@@ -6,10 +6,8 @@ from src.modules.authentication.dto import (
     LoginUserDTO,
     RegisterUserDTO,
 )
-from src.usecases.auth import (
-    LoginUser,
-    RegisterUser,
-)
+from src.usecases.auth.login_user import LoginUser
+from src.usecases.auth.register_user import RegisterUser
 
 
 async def test_login_user_usecase(register_user_dto: RegisterUserDTO):

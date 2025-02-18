@@ -22,9 +22,10 @@ class RedisCodeRepository(AbstractCodeRepository):
         await self.redis.set(str(dto.user_id), value=json.dumps(data), ex=ttl)
         logger.info(f'Set code for the user: user_id={dto.user_id}')
 
-    async def get(self, user_id: int) -> AddMFACode:
+    async def get(self, user_id: int) -> str:
         data: str | None = await self.redis.get(str(user_id))
         if not data:
             logger.info(f'Code does not exist: user_id={user_id}')
             raise ObjectDoesNotExist(user_id)
-        return AddMFACode(user_id=user_id, **json.loads(data))
+        dto = AddMFACode(user_id=user_id, **json.loads(data))
+        return dto.code

@@ -17,7 +17,7 @@ from src.modules.oauth.service import (
     GoogleOAuthService,
 )
 
-from . import UseCase
+from .. import UseCase
 
 
 def _get_service_by_provider(provider: str) -> AbstractOAuthService:

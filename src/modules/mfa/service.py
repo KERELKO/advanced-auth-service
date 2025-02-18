@@ -20,10 +20,10 @@ class MFAService:
 
     async def check_storage_code(self, user_id: int, code: str) -> bool:
         try:
-            dto = await self.code_repository.get(user_id)
+            storage_code = await self.code_repository.get(user_id)
         except ObjectDoesNotExist as e:
             raise CodeExpiredException(e)
-        return dto.code == code
+        return storage_code == code
 
     def generate_otp_uri(
         self,
